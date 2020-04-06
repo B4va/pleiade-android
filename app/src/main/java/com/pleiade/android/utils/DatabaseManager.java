@@ -8,6 +8,10 @@ import com.pleiade.android.BuildConfig;
 
 public class DatabaseManager {
 
+    /**
+     * Initialise la base de donnée distance si release-build,
+     * la base de donnée locale si dev-build
+     */
     public static void initialize() {
         boolean firebaseEmulator = BuildConfig.FIREBASE_EMULATOR;
         Log.i(DatabaseManager.class.toString(), firebaseEmulator ? "Activé" : "Désactivé");
