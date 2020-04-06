@@ -24,6 +24,10 @@ public class MainActivity extends AppCompatActivity {
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+        /* Teste la récupération de données test
+           'bava_distant' pour la BDD distante (production)
+           'bava_local' pour la BDD locale (émulateur)
+         */
         DocumentReference docRef = db.collection("users").document("test");
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
