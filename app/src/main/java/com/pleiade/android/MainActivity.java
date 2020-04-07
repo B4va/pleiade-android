@@ -11,37 +11,37 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.pleiade.android.utils.DatabaseManager;
+
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        DatabaseManager.initialize();
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-
         /* Teste la récupération de données test
-           'bava_distant' pour la BDD distante (production)
-           'bava_local' pour la BDD locale (émulateur)
+           'bava_prod' pour la BDD de production
+           'bava_dev' pour la BDD de développement
          */
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference docRef = db.collection("users").document("test");
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                final String TAG = "DbTests";
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     assert document != null;
                     if (document.exists()) {
-                        Log.i("TEST_DB", "Data: " + document.getData());
+                        Log.i(TAG, "Data: " + document.getString("name"));
                     } else {
-                        Log.i("TEST_DB", "Pas de document 'users'");
+                        Log.e(TAG, "Pas de document 'users'");
                     }
                 } else {
-                    Log.i("TEST_DB", "Erreur de lecture");
+                    Log.e(TAG, "Erreur de lecture");
                 }
             }
         });
