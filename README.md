@@ -1,5 +1,7 @@
 # Pleiade (android app)
 
+![logo](doc_readme/logo_gold.png)
+
 - [Application](#application)
 - [Conception](#conception)
     - [Gestion des données](#gestion-des-données)
@@ -8,7 +10,7 @@
     - [Environnements](#environnement)
     - [Versions](#versions)
 
-![logo](doc_readme/logo_gold.png)
+*Application Android. Pleiade offre la possibilité de partager des recommandations de films, séries, musiques, livres, etc.*
 
 ## Application
 
