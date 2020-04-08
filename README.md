@@ -1,11 +1,11 @@
 # Pleiade (android app)
 
-- [1. Application](#1-application)
-- [2. Conception](#2-conception)
-- [3. Développement](#3-développement)
+- [Application](#application)
+- [Conception](#conception)
+- [Développement](#développement)
 
-## 1 - Application
+## Application
 
-## 2 - Conception
+## Conception
 
-## 3 - Développement
+## Développement
