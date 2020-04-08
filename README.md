@@ -4,7 +4,7 @@
 - [Conception](#conception)
 - [Développement](#développement)
 
-![logo](doc_readme/max_logo_gold.png)
+![logo](doc_readme/logo_gold.png)
 
 ## Application
 
