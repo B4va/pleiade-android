@@ -2,13 +2,19 @@
 
 - [Application](#application)
 - [Conception](#conception)
+    - [Gestion des données](#gestion-des-données)
 - [Développement](#développement)
+    - [IDE](#IDE)
+    - [Environnements](#environnement)
+    - [Versions](#versions)
 
 ![logo](doc_readme/logo_gold.png)
 
 ## Application
 
 ## Conception
+
+### Gestion des données
 
 La persistance des données est assurée via Firestore, sous la forme d'une base de données noSQL.
 
@@ -18,7 +24,7 @@ La persistance des données est assurée via Firestore, sous la forme d'une base
 
 L'application est développée en Java avec Android Studio. La configuration de l'IDE peut être directement générée sur la base des fichiers de configuration inclus dans le repository.
 
-### Bases de données
+### Environnements
 
 La gestion du build et des environnements est assurée par Gradle. Deux environnements sont mis en place, intéragissant avec des bases de données isolées :
 - L'environnement `dev` est relié à la base de donnée dédiée et nécessite l'ajout du document de configuration dans `/src/dev`.
