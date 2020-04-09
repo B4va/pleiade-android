@@ -6,6 +6,7 @@ def keystoreProperties = new Properties()
 keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 android {
+
     signingConfigs {
         release {
             keyAlias keystoreProperties['keyAlias']
@@ -14,13 +15,14 @@ android {
             storePassword keystoreProperties['storePassword']
         }
     }
+
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
     defaultPublishConfig "release"
 
     defaultConfig {
         applicationId "com.pleiade.android"
-        minSdkVersion 24
+        minSdkVersion 19
         targetSdkVersion 29
         versionCode 1
         versionName "0.0"

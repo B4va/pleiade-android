@@ -4,11 +4,12 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/min_logo_gold"
+        android:icon="@drawable/icon_square"
         android:label="@string/app_name"
-        android:roundIcon="@drawable/min_logo_gold"
+        android:roundIcon="@drawable/icon_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:name=".App">
 
         <activity android:name=".SplashActivity"
             android:theme="@style/SplashTheme">
