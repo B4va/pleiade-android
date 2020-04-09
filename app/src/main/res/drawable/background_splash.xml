@@ -2,10 +2,13 @@
 
     <item android:drawable="@color/gold"/>
 
-    <item>
-        <bitmap
-            android:gravity="center"
-            android:src="@mipmap/ic_launcher"/>
-    </item>
+    <item
+        android:drawable="@drawable/max_logo_white"
+        android:left="30dp"
+        android:right="30dp"
+        android:gravity="center"
+        android:width="633px"
+        android:height="174px"
+        />
 
 </layer-list>
