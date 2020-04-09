@@ -8,8 +8,15 @@ import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
 
+/**
+ * Activité principale de l'application
+ */
 public class MainActivity extends Activity {
 
+    /**
+     * Exécutée à la création de l'instance
+     * @param savedInstanceState instance sauvegardée
+     */
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
