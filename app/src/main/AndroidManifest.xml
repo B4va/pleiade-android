@@ -3,14 +3,15 @@
     package="com.pleiade.android">
 
     <application
+        android:name=".App"
         android:allowBackup="true"
         android:icon="@drawable/icon_square"
         android:label="@string/app_name"
         android:roundIcon="@drawable/icon_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:name=".App">
+        android:theme="@style/AppTheme">
 
+        <!-- SplashActivity -->
         <activity android:name=".activities.SplashActivity"
             android:theme="@style/SplashTheme">
             <intent-filter>
@@ -19,8 +20,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".activities.MainActivity">
-        </activity>
+        <!-- MainActivity -->
+        <activity android:name=".activities.MainActivity" />
 
     </application>
 
