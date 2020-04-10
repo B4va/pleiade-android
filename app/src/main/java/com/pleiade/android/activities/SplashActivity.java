@@ -1,4 +1,4 @@
-package com.pleiade.android;
+package com.pleiade.android.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
