@@ -3,7 +3,7 @@
     package="com.pleiade.android">
 
     <application
-        android:name=".App"
+        android:name=".app.App"
         android:allowBackup="true"
         android:icon="@drawable/icon_square"
         android:label="@string/app_name"

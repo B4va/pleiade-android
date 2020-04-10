@@ -1,4 +1,4 @@
-package com.pleiade.android;
+package com.pleiade.android.app;
 
 import android.app.Application;
 
