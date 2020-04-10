@@ -1,4 +1,4 @@
-# Pleiade (android app)
+# Pleiade
 
 *Application Android. Pleiade offre la possibilité de partager des recommandations de films, séries, musiques, livres, etc.*
 
@@ -8,7 +8,7 @@
 
 - [Application](#application)
     - [Général](#général)
-    - [Cas d'utilisation](#cas-d-utilisation)
+    - [Cas d'utilisation](#cas-dutilisation)
     - [Charte graphique](#charte-graphique)
 - [Conception](#conception)
     - [Modélisation](#modélisation)
@@ -17,7 +17,7 @@
     - [APIs](#apis)
 - [Développement](#développement)
     - [IDE](#IDE)
-    - [Environnements](#environnement)
+    - [Environnements](#environnements)
     - [Tests](#tests)
     - [Versions](#versions)
 
@@ -55,7 +55,7 @@ La modélisation et la structuration de l'application reposent sur les standards
 
 ![diagramme de classe](doc_readme/diagramme_classes.png)
 
-### Resources
+### Ressources
 
 La gestion des ressources de l'application repose sur les standards de développement Android, et inclut donc les dossiers suivants :
 
