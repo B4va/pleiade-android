@@ -46,12 +46,15 @@ La **charte graphique** Pleiade est [disponible ici](doc_readme/charte_graphique
 
 ### Modélisation
 
-La modélisation et la structuration de l'application reposent sur les standards de développement Android, et inclut donc les packages suivants.
+La modélisation et la structuration de l'application reposent sur les standards de développement Android, et inclut donc les packages suivants :
 
-`com.pleiade.android` :
-- `.activities` : Les différentes activités composant l'application, ayant le rôle de controleurs.
-- `.app` : Classe de chargement de l'application
-- `.models` : Modèles impliqués dans les processus de l'application, et liés à la base de donnée.
+- `activities` : Classes de traitement ayant le rôle de controleurs.
+- `adapters` : Classes permettant la structuration d'ensembles de données à afficher.
+- `app` : Classe de chargement de l'application.
+- `fragments` : Sous-activités modulables, composant certaines activités complexes.
+- `models` : Classes de modélisation impliquées dans les processus de l'application, et liées à la base de donnée.
+- `utils` : Classes utilitaires.
+- `viewModels` : Classes de gestion des données lorsque celles-ci sont mobilisées dans une activité. Permettent une persistance des données indépendamment des changements d'états de l'activitié (ex : rotation de l'écran).
 
 ![diagramme de classe](doc_readme/diagramme_classes.png)
 
@@ -66,6 +69,10 @@ La gestion des ressources de l'application repose sur les standards de développ
 ### Gestion des données
 
 La persistance des données est assurée via Firestore, sous la forme d'une base de données noSQL.
+
+La gestion des données propres aux comptes utilisateurs est gérée indépendamment via le service Firebase Authentification.
+
+Des règles sont configurées pour chaque modèle, permettant de paramétrer le type de données attendues et les conditions d'accès à certaines données.
 
 ![schéma bdd](doc_readme/schema_bdd.png)
 
@@ -90,18 +97,36 @@ La gestion du build et des environnements est assurée par Gradle. Deux environn
 - L'environnement `dev` est relié à la base de donnée dédiée et nécessite l'ajout du document de configuration dans `/src/dev`.
 - L'environnement `prod` est relié à la base de données de production et nécessite l'ajout du document de configuration dans `/src/prod`.
 
-Chacune de ces bases de données peut donner lieu à un export, sous la forme d'un backup pour la base de données de production, et d'un seed pour la base de données de développement. En phase de pré-production, la base de données de production peut importer le seed préconfiguré de la base de données de développement, de façon à ce qu'elle soit initialisée avec un jeu de données préexistant. A l'inverse, la base de donnée de développement peut importer un export de la base de données de production afin de réaliser tests et développements sur une copie du jeu de données réel.
+Chacune de ces bases de données peut donner lieu à un export, sous la forme d'un backup pour la base de données de production, et d'un seed pour la base de données de développement. En phase de pré-production, la base de données de production peut importer le seed préconfiguré de la base de données de développement, de façon à ce qu'elle soit initialisée avec un jeu de données cohérent. A l'inverse, la base de donnée de développement peut importer un export de la base de données de production afin de réaliser tests et développements sur une copie du jeu de données réel.
 
 L'accès à chacune des bases de données nécessite de s'être vu accorder l'accès Firestore correspondant.
 
 ### Tests
 
-Le processus de développement de l'application repose sur le *Test Driven Développement* (TDD). Les tests unitaires sont donc réalisés en premier, à chaque itération de développement, de manière à assurer la possibilité de tester l'application à n'importe quelle étape du développement. Les tests d'intégration sont quant à eux réalisés après chaque mise à jour importante des fonctionnalités, avec pour objectif le test de scénarii plus généraux.
+Le processus de développement de l'application repose sur le *Test Driven Développement* (TDD). Les tests unitaires sont donc réalisés en amont du développement proprement dit, pour chaque nouvelle version de développement, de manière à garantir la possibilité de tester l'application à n'importe quelle étape du développement. Les tests d'intégration sont quant à eux réalisés après chaque mise à jour importante des fonctionnalités, avec pour objectif le test de scénarii plus généraux.
 
-### Versions
+### Versions / Processus
 
-**Versions de déploiement [x.0]** : chaque nouvelle version déployée prend le format `x.0`, le second terme de la référence des versions étant réservé aux versions de développement. Les versions implémentant de nouvelles fonctionnalités et étant prêtes pour la mise en productions sont donc référencées `1.0`, `2.0`, `3.0`, etc. Un troisième terme peut être ajoutée à la référence en cas de mise à jour corrective .
+Chaque version donne lieu à un processus de développement standardisé, qu'il s'agit chaque fois de respecter dans la mesure du possible :
 
-**Versions de développement [*.x]** : pendant la phase de développement, chaque itération conduisant à la prochaine version de déploiement est référencée grâce au second terme du numéro de version. Entre la version 1 et 2, les itérations, correspondant aux différentes étapes du développement, dont donc par exemple référencées `1.1`, `1.2`, `1.3`, etc.
+- *Analyse des besoins* : Etudes des objectifs de la version de développement, en termes de fonctionnalités. A cet effet, production ou mise à jour d'un diagramme de cas d'utilisation et un diagramme des parcours utilisateur.
+- *Maquette* : Réalisation de la maquette des vues à intégrer ou modifier au cours du développement.
+- *Paramétrage des dépendances* : Paramétrage du build de l'application, notamment en ce qui concerne ses dépendance, de manière à disposer des ressources nécessaires lors du développement.
+- *Modélisation* : Conception des modèles, des structures de données, et des traitements développer. Cette étape donne lieu à la production ou la mise à jour d'un diagramme de classe et d'un diagramme d'entités relationnelles.
+- *Paramétrage de la base de données* : Implémentation des structures de données et des règles de contrôle de la base de données côté serveur, suivie de l'initialisation d'un jeu de données.
+- *Développement* : Intégration front-end des vues de l'application, production de tests en amont de la programmation des classes métiers, puis mise en oeuvre des fonctionnalités.
+- *Mise en production* : Déploiement de l'application en version de test et/ou de production.
+- *Documentation* : Retour sur les documents produits en amont du développement, validation et mise à jour, et production éventuelle d'une documentation complémentaire, axée sur les processus mis en oeuvre (ex : diagrammes d'activité ou de séquence).
+- *Mise à jour du Readme* : Les avancées et modifications générales sont rendues visibles publiquement de manière à faciliter le travail collectif.
 
-**Versions correctives [*.0.x]** : Ces versions sont développée à partir des versions de déploiement et ont pour objectif la corrections de problèmes fonctionnels ou de sécurité. Ces versions n'ont donc pas pour but le développement de nouvelles fonctionnalités ; elles reprennent par conséquent le numéro des versions de déploiement suivi d'un troieme terme. Après le déploiement de la première version, pourront donc par exemple être déployées des mise à jour référencées `1.0.1`, `1.0.2`, `1.0.3`, etc.
+Toutes ces étapes sont coordonnées via la plateforme Trello.
+
+Tout au long du développement, la documentation est uploadée sur la plateforme. Des ressources de documentation externes sont également mises en commun, suite au travail de recherche étant mis en oeuvre de manière continue.
+
+**Références des versions :**
+
+*Versions de déploiement `[x.0]`* : chaque nouvelle version déployée prend le format `x.0`, le second terme de la référence des versions étant réservé aux versions de développement. Les versions implémentant de nouvelles fonctionnalités et étant prêtes pour la mise en productions sont donc référencées `1.0`, `2.0`, `3.0`, etc. Un troisième terme peut être ajoutée à la référence en cas de mise à jour corrective .
+
+*Versions de développement `[*.x]`* : pendant la phase de développement, chaque itération conduisant à la prochaine version de déploiement est référencée grâce au second terme du numéro de version. Entre la version 1 et 2, les itérations, correspondant aux différentes étapes du développement, dont donc par exemple référencées `1.1`, `1.2`, `1.3`, etc.
+
+*Versions correctives `[*.0.x]`* : Ces versions sont développée à partir des versions de déploiement et ont pour objectif la corrections de problèmes fonctionnels ou de sécurité. Ces versions n'ont donc pas pour but le développement de nouvelles fonctionnalités ; elles reprennent par conséquent le numéro des versions de déploiement suivi d'un troieme terme. Après le déploiement de la première version, pourront donc par exemple être déployées des mise à jour référencées `1.0.1`, `1.0.2`, `1.0.3`, etc.
