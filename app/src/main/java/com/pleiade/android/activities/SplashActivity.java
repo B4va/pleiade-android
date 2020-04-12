@@ -1,16 +1,17 @@
 package com.pleiade.android.activities;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.pleiade.android.R;
 
 /**
  * Ecran de chargement au lancement de l'activité
  */
-public class SplashActivity extends Activity {
+public class SplashActivity extends AppCompatActivity {
 
 
     private static final int TRANSITION_TIMEOUT = 3000;
