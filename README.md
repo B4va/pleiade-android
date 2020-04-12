@@ -109,15 +109,15 @@ Le processus de développement de l'application repose sur le *Test Driven Déve
 
 Chaque version donne lieu à un processus de développement standardisé, qu'il s'agit chaque fois de respecter dans la mesure du possible :
 
-- *Analyse des besoins* : Etudes des objectifs de la version de développement, en termes de fonctionnalités. A cet effet, production ou mise à jour d'un diagramme de cas d'utilisation et un diagramme des parcours utilisateur.
-- *Maquette* : Réalisation de la maquette des vues à intégrer ou modifier au cours du développement.
+- **Analyse des besoins** : Etudes des objectifs de la version de développement, en termes de fonctionnalités. A cet effet, production ou mise à jour d'un diagramme de cas d'utilisation et un diagramme des parcours utilisateur.
+- **Maquette** : Réalisation de la maquette des vues à intégrer ou modifier au cours du développement.
 - *Paramétrage des dépendances* : Paramétrage du build de l'application, notamment en ce qui concerne ses dépendance, de manière à disposer des ressources nécessaires lors du développement.
-- *Modélisation* : Conception des modèles, des structures de données, et des traitements développer. Cette étape donne lieu à la production ou la mise à jour d'un diagramme de classe et d'un diagramme d'entités relationnelles.
-- *Paramétrage de la base de données* : Implémentation des structures de données et des règles de contrôle de la base de données côté serveur, suivie de l'initialisation d'un jeu de données.
-- *Développement* : Intégration front-end des vues de l'application, production de tests en amont de la programmation des classes métiers, puis mise en oeuvre des fonctionnalités.
-- *Mise en production* : Déploiement de l'application en version de test et/ou de production.
-- *Documentation* : Retour sur les documents produits en amont du développement, validation et mise à jour, et production éventuelle d'une documentation complémentaire, axée sur les processus mis en oeuvre (ex : diagrammes d'activité ou de séquence).
-- *Mise à jour du Readme* : Les avancées et modifications générales sont rendues visibles publiquement de manière à faciliter le travail collectif.
+- **Modélisation** : Conception des modèles, des structures de données, et des traitements développer. Cette étape donne lieu à la production ou la mise à jour d'un diagramme de classe et d'un diagramme d'entités relationnelles.
+- **Paramétrage de la base de données** : Implémentation des structures de données et des règles de contrôle de la base de données côté serveur, suivie de l'initialisation d'un jeu de données.
+- **Développement** : Intégration front-end des vues de l'application, production de tests en amont de la programmation des classes métiers, puis mise en oeuvre des fonctionnalités.
+- **Déploiement** : Déploiement de l'application en version de test et/ou de production. Permet la mise en évidence de défaults et la correction de ces derniers.
+- **Documentation** : Retour sur les documents produits en amont du développement, validation et mise à jour, et production éventuelle d'une documentation complémentaire, axée sur les processus mis en oeuvre (ex : diagrammes d'activité ou de séquence).
+- **Mise à jour du Readme** : Les avancées et modifications générales sont rendues visibles publiquement de manière à faciliter le travail collectif.
 
 Toutes ces étapes sont coordonnées via la plateforme Trello.
 
