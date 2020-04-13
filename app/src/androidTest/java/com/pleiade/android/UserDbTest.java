@@ -1,53 +1,55 @@
 package com.pleiade.android;
 
 import android.content.Context;
-import android.os.Bundle;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.test.core.app.ApplicationProvider;
+import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner;
 
-import com.google.api.ContextOrBuilder;
 import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.pleiade.android.models.User;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * Tests du modèle User
  * @see User
  */
+@RunWith(AndroidJUnit4ClassRunner.class)
 public class UserDbTest {
 
+    private Context context = ApplicationProvider.getApplicationContext();
     private static FirebaseFirestore db;
-    private static FirebaseUser user;
+    private static FirebaseAuth auth;
+    private static String user;
 
-    @BeforeAll
-    public static void dbEmulatorInitialisation() {
-        // todo
-//        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
-//                .setHost("http://localhost:8080")
-//                .setSslEnabled(false)
-//                .setPersistenceEnabled(false)
-//                .build();
-//
-//        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
-//        firestore.setFirestoreSettings(settings);
-//        db = firestore;
+    @Before
+    public void firebaseAppInitialisation(){
+        FirebaseApp.initializeApp(context);
     }
 
-    @BeforeAll
-    public static void authenticatedUserIntitialisation(){
+    @Before
+    public void firebaseFirestoreInitialisation() {
+        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
+                .setHost("localhost:8080")
+                .setSslEnabled(false)
+                .setPersistenceEnabled(false)
+                .build();
+        db = FirebaseFirestore.getInstance();
+        db.setFirestoreSettings(settings);
+    }
+
+    @Before
+    public void firebaseAuthIntitialisation(){
         // todo
     }
 
     @Test
-    public void validUserCreation() {
+    public void testValidUserCreation() throws InterruptedException {
         // avec tous les champs
 
         // sans email
