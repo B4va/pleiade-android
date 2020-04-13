@@ -1,8 +1,92 @@
 rules_version = '2';
+
 service cloud.firestore {
-  match /databases/{database}/documents {
-    match /{document=**} {
-      allow read, write: if request.time < timestamp.date(2020, 5, 7);
+
+  // REGLES
+
+	match /databases/{database}/documents {
+
+    	// Vérouille tous les documents par défaut 
+    	match /{document=**} {
+    		allow read, write: if false;
+		}
+
+    	// Règles : users
+    	match /users/{userId} {
+			// Lecture : utilisateur connecté
+			allow read: if isSignedIn();
+			// Ecriture : utilisateur sur son propre compte
+			allow write: if isUser(userId);
+
+			// Validation
+			allow update: if isValidUser();
+			allow create: if isValidNewUser();
+		}
+
+	}
+
+	// VALIDATIONS
+
+	// Vérifie le format des champs pour user
+	function isValidUser(){
+		return incomingData().lastName is string && incomingData().lastName.matches("^[a-zA-Z]*$") &&
+			incomingData().firstName is string && incomingData().firstName.matches("^[a-zA-Z]*$") &&
+			incomingData().email is string && incomingData().email.matches("^[a-zA-Z_0-9]+@[a-zA-Z_]+?.[a-zA-Z]{2,3}$") &&
+			incomingData().tag is string && incomingData().tag.matches("[a-zA-Z_0-9]") &&
+			incomingData().profilePicture is string &&
+			incomingData().createdAt is duration &&
+			incomingData().modifiedAt is duration			
+	}
+
+	// Vérifie le format des champs et la présence des données requises pour user
+	function isValidNewUser(){
+		return isValidUser() &&
+			exists(incomingData().lastName) &&
+			exists(incomingData().firstName) &&
+			exists(incomingData().tag) &&
+			exists(incomingData().createdAt) &&
+			exists(incomingData().modifiedAt)
+	}
+
+	// FONCTIONS
+
+	// Vérifie l'association du document à l'utilisateur connecté
+	function isUser(userId) {
+    	return request.auth.uid == userId;
     }
-  }
+
+	// Vérifie l'association de la ressource avec l'utilisateur connecté
+	function resourceMatchesUID() {
+		return request.auth.uid == resource.data.uid;
+	}
+
+	// Vérifie l'association de la requête avec l'utilisateur connecté
+	function requestMatchesUID() {
+		return request.auth.uid == request.resource.data.uid;
+	}
+
+	// Vérifie que l'utilisateur est authentifié
+	function isSignedIn() {
+    	return request.auth != null;
+    }
+
+	// Vérifie que l'utilisateur a confirmé son adresse mail
+    function emailVerified() {
+    	return request.auth.token.email_verified;
+    }
+
+	// Vérifie que l'utilisateur existe
+    function userExists() {
+    	return exists(/databases/$(database)/documents/users/$(request.auth.uid));
+    }
+
+    // [READ] Retourne les données d'un document
+    function existingData() {
+    	return resource.data;
+    }
+    // [WRITE] Retourne les données envoyées par un utilisateur
+    function incomingData() {
+    	return request.resource.data;
+    }
+
 }
