@@ -25,7 +25,6 @@ public class UserDbTest {
     private Context context = ApplicationProvider.getApplicationContext();
     private static FirebaseFirestore db;
     private static FirebaseAuth auth;
-    private static String user;
 
     @Before
     public void firebaseAppInitialisation(){
@@ -49,7 +48,7 @@ public class UserDbTest {
     }
 
     @Test
-    public void testValidUserCreation() throws InterruptedException {
+    public void testValidUserCreation() {
         // avec tous les champs
 
         // sans email
@@ -59,7 +58,7 @@ public class UserDbTest {
     }
 
     @Test
-    public void invalidUserCreation() {
+    public void testInvalidUserCreation() {
         // sans authentification
 
         // sans appartenance à l'utilisateur authentifié
@@ -86,7 +85,7 @@ public class UserDbTest {
     }
 
     @Test
-    public void validUserUpdate() {
+    public void testValidUserUpdate() {
         // tous les champs
 
         // uniquement prénom
@@ -103,7 +102,7 @@ public class UserDbTest {
     }
 
     @Test
-    public void invalidUserUpdate() {
+    public void testInvalidUserUpdate() {
         // sans authentification
 
         // sans appartenance à l'utilisateur authentifié
@@ -130,26 +129,26 @@ public class UserDbTest {
     }
 
     @Test
-    public void validUserDeletion() {
+    public void testValidUserDeletion() {
 
     }
 
     @Test
-    public void invalidUserDeletion() {
+    public void testInvalidUserDeletion() {
         // sans authentification
 
         // sans appartenance à l'utilisateur authentifié
     }
 
     @Test
-    public void validUserRead() {
+    public void testValidUserRead() {
         // avec appartenance à l'utilisateur authentifié
 
         // sans appartenance à l'utilisateur authentifié
     }
 
     @Test
-    public void invalidUserRead() {
+    public void testInvalidUserRead() {
         // sans authentification
 
     }
