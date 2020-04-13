@@ -13,10 +13,11 @@ service cloud.firestore {
 
     	// Règles : users
     	match /users/{userId} {
+			
 			// Lecture : utilisateur connecté
 			allow read: if isSignedIn();
 			// Ecriture : utilisateur sur son propre compte
-			allow write: if isUser(userId);
+			allow write: if isUser(userId) && hasOnly("lastName", "firstName", "email", "tag", "profilePictureUri", "createdAt", "modifiedAt");
 
 			// Validation
 			allow update: if isValidUser();
