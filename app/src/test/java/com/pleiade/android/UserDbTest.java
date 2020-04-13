@@ -18,17 +18,56 @@ public class UserTest {
 
     @Test
     public void validUserCreation() {
+        // avec tous les champs
+
+        // sans email
+
+        // sans image
 
     }
 
     @Test
     public void invalidUserCreation() {
+        // sans authentification
 
+        // sans appartenance à l'utilisateur authentifié
+
+        // sans prénom
+
+        // sans nom
+
+        // sans tag
+
+        // sans date de création
+
+        // sans date de modification
+
+        // avec un champ non existant
+
+        // avec un prénom non conforme
+
+        // avec un nom non conforme
+
+        // avec un email non conforme
+
+        // avec un tag non conforme
     }
 
     @Test
     public void validUserUpdate() {
+        // tous les champs
 
+        // uniquement prénom
+
+        // uniquement nom
+
+        // uniquement tag
+
+        // uniquement email
+
+        // uniquement image
+
+        // uniquement date de modification
     }
 
     @Test
