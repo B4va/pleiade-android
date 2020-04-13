@@ -17,10 +17,12 @@ service cloud.firestore {
 			// Lecture : utilisateur connecté
 			allow read: if isSignedIn();
 			// Ecriture : utilisateur sur son propre compte
-			allow write: if isUser(userId) && hasOnly("lastName", "firstName", "email", "tag", "profilePictureUri", "createdAt", "modifiedAt");
+			allow write: if isUser(userId) && 
+				hasOnly("lastName", "firstName", "email", "tag", "profilePictureUri", "createdAt", "modifiedAt");
 
 			// Validation
-			allow update: if isValidUser();
+			allow update: if isValidUser() &&
+				!"createdAt" in incomingData();
 			allow create: if isValidNewUser();
 		}
 
