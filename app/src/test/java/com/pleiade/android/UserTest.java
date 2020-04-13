@@ -1,17 +1,62 @@
 package com.pleiade.android;
 
+import com.pleiade.android.models.User;
+
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
 /**
- * Example local unit test, which will execute on the development machine (host).
- *
- * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
+ * Tests du modèle User
+ * @see User
  */
-public class ExampleUnitTest {
+public class UserTest {
+
+    /**
+     * Tests du modèle en base de données et des règles de sécurité
+     */
+
     @Test
-    public void addition_isCorrect() {
-        assertEquals(4, 2 + 2);
+    public void validUserCreation() {
+
     }
+
+    @Test
+    public void invalidUserCreation() {
+
+    }
+
+    @Test
+    public void validUserUpdate() {
+
+    }
+
+    @Test
+    public void invalidUserUpdate() {
+
+    }
+
+    @Test
+    public void validUserDeletion() {
+
+    }
+
+    @Test
+    public void invalidUserDeletion() {
+
+    }
+
+    @Test
+    public void validUserRead() {
+
+    }
+
+    @Test
+    public void invalidUserRead() {
+
+    }
+
+    /**
+     * Tests des méthodes objet
+     */
 }
