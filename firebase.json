@@ -5,7 +5,9 @@
   },
   "emulators": {
     "firestore": {
-      "port": 8080
+      "port": 8080,
+      "rules": "firebase/firestore.rules",
+      "indexes": "firebase/firestore.indexes.json"
     }
   }
 }
