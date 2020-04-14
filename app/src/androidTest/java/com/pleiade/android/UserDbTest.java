@@ -11,9 +11,13 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.pleiade.android.models.User;
 
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assume.assumeNotNull;
+import static org.junit.Assume.assumeTrue;
 
 /**
  * Tests du modèle User
@@ -22,17 +26,17 @@ import org.junit.runner.RunWith;
 @RunWith(AndroidJUnit4ClassRunner.class)
 public class UserDbTest {
 
-    private Context context = ApplicationProvider.getApplicationContext();
     private static FirebaseFirestore db;
     private static FirebaseAuth auth;
 
-    @Before
-    public void firebaseAppInitialisation(){
+    @BeforeClass
+    public static void firebaseAppInitialisation(){
+        Context context = ApplicationProvider.getApplicationContext();
         FirebaseApp.initializeApp(context);
     }
 
-    @Before
-    public void firebaseFirestoreInitialisation() {
+    @BeforeClass
+    public static void firebaseFirestoreInitialisation() {
         FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
                 .setHost("localhost:8080")
                 .setSslEnabled(false)
@@ -42,13 +46,31 @@ public class UserDbTest {
         db.setFirestoreSettings(settings);
     }
 
-    @Before
-    public void firebaseAuthIntitialisation(){
-        // todo
+    @BeforeClass
+    public static void firebaseAuthInitialisation(){
+        auth = FirebaseAuth.getInstance();
+    }
+
+    private static void firebaseAuthLogin() throws InterruptedException {
+        if (auth.getCurrentUser() == null){
+            auth.signInWithEmailAndPassword("test@mail.com", "123456");
+        }
+        Thread.sleep(3000);
+        assumeNotNull(auth.getCurrentUser());
+    }
+
+    private static void firebaseAuthLogout(){
+        if (auth.getCurrentUser() != null){
+            auth.signOut();
+        }
+        assumeTrue(auth.getCurrentUser() == null);
     }
 
     @Test
-    public void testValidUserCreation() {
+    public void testValidUserCreation() throws InterruptedException {
+        firebaseAuthLogin();
+        assertNotNull("test raté", FirebaseAuth.getInstance());
+
         // avec tous les champs
 
         // sans email
