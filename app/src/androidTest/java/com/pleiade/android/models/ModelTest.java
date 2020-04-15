@@ -4,6 +4,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.pleiade.android.utils.FirebaseTestManager;
 
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
 /**
@@ -16,8 +17,7 @@ public abstract class ModelTest {
     protected static FirebaseAuth auth;
 
     /**
-     * Met en place les instances Firebase et auhtentifie un
-     * utilisateur test
+     * Met en place les instances de test
      */
     @BeforeClass
     public static void setup() throws Exception {
@@ -30,6 +30,14 @@ public abstract class ModelTest {
                 FirebaseTestManager.USER1_EMAIL,
                 FirebaseTestManager.USER_PASSWORD
         );
+    }
+
+    /**
+     * Efface les données de test
+     */
+    @AfterClass
+    public static void tearDown(){
+        FirebaseTestManager.clearFirebaseFirestoreEmulator();
     }
 
     /**
@@ -116,4 +124,4 @@ public abstract class ModelTest {
         );
     }
 
-    }
+}
