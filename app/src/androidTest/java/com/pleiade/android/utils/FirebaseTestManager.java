@@ -16,6 +16,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 
+import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -50,10 +51,16 @@ public class FirebaseTestManager {
     }
 
     public static void firebaseAuthLogin(FirebaseAuth auth, String email, String password) throws Exception {
-        auth.signOut();
-        Tasks.await(auth.signInWithEmailAndPassword(email, password), AUTH_TIMEOUT, TimeUnit.SECONDS);
         if (auth.getCurrentUser() == null){
-            throw new Exception("L'utilisateur n'a pas pu être authentifié");
+            Tasks.await(auth.signInWithEmailAndPassword(email, password), AUTH_TIMEOUT, TimeUnit.SECONDS);
+            if (auth.getCurrentUser() == null){
+                throw new Exception("L'utilisateur n'a pas pu être authentifié");
+            }
+        } else {
+            if (!Objects.equals(auth.getCurrentUser().getEmail(), email)){
+                firebaseAuthLogout(auth);
+                firebaseAuthLogin(auth, email, password);
+            }
         }
     }
 
