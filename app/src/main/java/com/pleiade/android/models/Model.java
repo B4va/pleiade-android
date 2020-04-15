@@ -7,7 +7,7 @@ import java.util.Map;
 
 public abstract class Model {
 
-    private DocumentReference ref;
+    protected DocumentReference ref;
 
     /**
      * Constructeur vide, pour création du modèles

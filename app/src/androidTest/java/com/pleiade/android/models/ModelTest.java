@@ -2,11 +2,14 @@ package com.pleiade.android.models;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.pleiade.android.utils.FirebaseTestManager;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import java.util.concurrent.ExecutionException;
 
 /**
  * Ressources et méthodes de base pour le test des modèles
@@ -40,7 +43,7 @@ public abstract class ModelTest {
      * Teste la méthode Create
      */
     @Test
-    public abstract void testCreate();
+    public abstract void testCreate() throws ExecutionException, InterruptedException;
 
     /**
      * Teste la méthode Read
