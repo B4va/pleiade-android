@@ -5,9 +5,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.pleiade.android.utils.FirebaseTestManager;
 
 import org.junit.BeforeClass;
-import org.junit.Test;
-
-import java.util.concurrent.ExecutionException;
 
 /**
  * Ressources et méthodes de base pour le test des modèles
@@ -38,49 +35,85 @@ public abstract class ModelTest {
     /**
      * Teste la méthode Create avec des paramètres valides
      */
-    @Test
-    public abstract void testCreateV() throws ExecutionException, InterruptedException;
+    public void testCreateV() throws Exception {
+        FirebaseTestManager.firebaseAuthLogin(
+                auth,
+                FirebaseTestManager.USER1_EMAIL,
+                FirebaseTestManager.USER_PASSWORD
+        );
+    }
 
     /**
      * Teste la méthode Create avec des paramètres invalides
      */
-    @Test
-    public abstract void testCreateI();
+    public void testCreateI() throws Exception {
+        FirebaseTestManager.firebaseAuthLogin(
+                auth,
+                FirebaseTestManager.USER1_EMAIL,
+                FirebaseTestManager.USER_PASSWORD
+        );
+    }
 
     /**
      * Teste la méthode Read
      */
-    @Test
-    public abstract void testRead();
+    public void testRead() throws Exception {
+        FirebaseTestManager.firebaseAuthLogin(
+                auth,
+                FirebaseTestManager.USER1_EMAIL,
+                FirebaseTestManager.USER_PASSWORD
+        );
+    }
 
     /**
      * Teste la méthode Update avec des paramètres valides
      */
-    @Test
-    public abstract void testUpdateV();
+    public void testUpdateV() throws Exception {
+        FirebaseTestManager.firebaseAuthLogin(
+                auth,
+                FirebaseTestManager.USER1_EMAIL,
+                FirebaseTestManager.USER_PASSWORD
+        );
+    }
 
     /**
      * Teste la méthode Update avec des paramètres invalides
      */
-    @Test
-    public abstract void testUpdateI();
+    public void testUpdateI() throws Exception {
+        FirebaseTestManager.firebaseAuthLogin(
+                auth,
+                FirebaseTestManager.USER1_EMAIL,
+                FirebaseTestManager.USER_PASSWORD
+        );
+    }
 
     /**
      * Teste la méthode Delete
      */
-    @Test
-    public abstract void testDelete();
+    public void testDelete() throws Exception {
+        FirebaseTestManager.firebaseAuthLogin(
+                auth,
+                FirebaseTestManager.USER1_EMAIL,
+                FirebaseTestManager.USER_PASSWORD
+        );
+    }
 
     /**
      * Teste le CRUD sans authentification
      */
-    @Test
-    public abstract void testNoAuthActions();
+    public void testNoAuthActions() throws Exception {
+        FirebaseTestManager.firebaseAuthLogout(auth);
+    }
 
     /**
      * Teste le CRUD avec l'authentification d'un utilisateur tiers
      */
-    @Test
-    public abstract void testGenericAuthActions();
+    public void testGenericAuthActions() throws Exception {
+        FirebaseTestManager.firebaseAuthLogin(
+                auth,
+                FirebaseTestManager.USER2_EMAIL,
+                FirebaseTestManager.USER_PASSWORD
+        );
+    }
 
     }
