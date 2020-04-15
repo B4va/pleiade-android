@@ -1,7 +1,10 @@
 package com.pleiade.android.models;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Map;
 
@@ -20,7 +23,20 @@ public class User extends Model {
      */
     @Override
     public Task create(Map<String, Object> modelMap) {
-        return null;
+        assert (FirebaseAuth.getInstance().getCurrentUser() != null);
+        modelMap.put("email", FirebaseAuth.getInstance().getCurrentUser().getEmail());
+        this.ref = FirebaseFirestore.getInstance()
+                .collection("users")
+                .document(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        Task<Void> t = ref.set(modelMap);
+        t.addOnSuccessListener(aVoid -> {
+            firstName = (String) modelMap.get("firstName");
+            lastName = (String) modelMap.get("lastName");
+            email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+            tag = (String) modelMap.get("tag");
+            profilePictureUri = (String) modelMap.get("profilePictureUri");
+        });
+        return t;
     }
 
     /**
