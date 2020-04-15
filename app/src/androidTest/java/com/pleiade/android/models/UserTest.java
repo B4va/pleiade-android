@@ -5,9 +5,10 @@ import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.pleiade.android.utils.FirebaseTestManager;
 
+import org.junit.Test;
+
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -19,8 +20,9 @@ public class UserTest extends ModelTest {
      * Teste la création valide d'un utilisateur
      */
     @Override
-    public void testCreateV() throws ExecutionException, InterruptedException {
-        FirebaseTestManager.firebaseAuthLogout(auth);
+    @Test
+    public void testCreateV() throws Exception {
+        FirebaseTestManager.firebaseAuthLogout(auth); // Logout
         assumeTrue(auth.getCurrentUser() == null);
 
         Map<String, Object> userMap = new HashMap<>();
@@ -72,7 +74,12 @@ public class UserTest extends ModelTest {
      * Teste la création invalide d'un utilisateur
      */
     @Override
-    public void testCreateI(){
+    @Test
+    public void testCreateI() throws Exception {
+        super.testCreateI(); // Auth USER1
+        assumeTrue(auth.getCurrentUser() != null);
+        assumeTrue(auth.getCurrentUser().getEmail() != null);
+        assumeTrue(auth.getCurrentUser().getEmail().equals(FirebaseTestManager.USER1_EMAIL));
 
     }
 
@@ -80,23 +87,36 @@ public class UserTest extends ModelTest {
      * Teste la lecture des données d'un utilisateur
      */
     @Override
-    public void testRead() {
-
+    @Test
+    public void testRead() throws Exception {
+        super.testRead(); // Auth USER1
+        assumeTrue(auth.getCurrentUser() != null);
+        assumeTrue(auth.getCurrentUser().getEmail() != null);
+        assumeTrue(auth.getCurrentUser().getEmail().equals(FirebaseTestManager.USER1_EMAIL));
     }
 
     /**
      * Teste la mise à jour valide d'un utlilisateur
      */
     @Override
-    public void testUpdateV() {
-
+    @Test
+    public void testUpdateV() throws Exception {
+        super.testUpdateV(); // Auth USER1
+        assumeTrue(auth.getCurrentUser() != null);
+        assumeTrue(auth.getCurrentUser().getEmail() != null);
+        assumeTrue(auth.getCurrentUser().getEmail().equals(FirebaseTestManager.USER1_EMAIL));
     }
 
     /**
      * Teste la mise à jour invalide d'un utilisateur
      */
     @Override
-    public void testUpdateI(){
+    @Test
+    public void testUpdateI() throws Exception {
+        super.testUpdateI(); // Auth USER1
+        assumeTrue(auth.getCurrentUser() != null);
+        assumeTrue(auth.getCurrentUser().getEmail() != null);
+        assumeTrue(auth.getCurrentUser().getEmail().equals(FirebaseTestManager.USER1_EMAIL));
 
     }
 
@@ -104,7 +124,12 @@ public class UserTest extends ModelTest {
      * Teste la suppression d'un utilisateur
      */
     @Override
-    public void testDelete() {
+    @Test
+    public void testDelete() throws Exception {
+        super.testDelete(); // Auth USER1
+        assumeTrue(auth.getCurrentUser() != null);
+        assumeTrue(auth.getCurrentUser().getEmail() != null);
+        assumeTrue(auth.getCurrentUser().getEmail().equals(FirebaseTestManager.USER1_EMAIL));
 
     }
 
@@ -112,15 +137,21 @@ public class UserTest extends ModelTest {
      * Teste le CRUD sans authentification
      */
     @Override
-    public void testNoAuthActions() {
-
+    @Test
+    public void testNoAuthActions() throws Exception {
+        super.testNoAuthActions(); // Logout
+        assumeTrue(auth.getCurrentUser() == null);
     }
 
     /**
      * Teste le CRUD avec l'authentification d'un utilisateur tiers
      */
     @Override
-    public void testGenericAuthActions() {
-
+    @Test
+    public void testGenericAuthActions() throws Exception {
+        super.testGenericAuthActions(); // Auth USER2
+        assumeTrue(auth.getCurrentUser() != null);
+        assumeTrue(auth.getCurrentUser().getEmail() != null);
+        assumeTrue(auth.getCurrentUser().getEmail().equals(FirebaseTestManager.USER2_EMAIL));
     }
 }
