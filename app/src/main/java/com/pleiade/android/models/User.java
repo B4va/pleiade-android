@@ -23,7 +23,7 @@ public class User extends Model {
      */
     @Override
     public Task create(Map<String, Object> modelMap) {
-        assert (FirebaseAuth.getInstance().getCurrentUser() != null);
+        // todo : création du compte et connexion FireAuth ; cf transactions
         modelMap.put("email", FirebaseAuth.getInstance().getCurrentUser().getEmail());
         this.ref = FirebaseFirestore.getInstance()
                 .collection("users")

@@ -1,8 +1,6 @@
 package com.pleiade.android.models;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.pleiade.android.utils.FirebaseTestManager;
 
@@ -16,10 +14,9 @@ import java.util.concurrent.ExecutionException;
  */
 public abstract class ModelTest {
 
-    private static final String TAG = "DevTest";
-    private static FirebaseFirestore db;
-    private static FirebaseAuth auth;
-    private static FirebaseUser user;
+    protected static final String TAG = "DevTest";
+    protected static FirebaseFirestore db;
+    protected static FirebaseAuth auth;
 
     /**
      * Met en place les instances Firebase et auhtentifie un
@@ -36,14 +33,19 @@ public abstract class ModelTest {
                 FirebaseTestManager.USER1_EMAIL,
                 FirebaseTestManager.USER_PASSWORD
         );
-        user = auth.getCurrentUser();
     }
 
     /**
-     * Teste la méthode Create
+     * Teste la méthode Create avec des paramètres valides
      */
     @Test
-    public abstract void testCreate() throws ExecutionException, InterruptedException;
+    public abstract void testCreateV() throws ExecutionException, InterruptedException;
+
+    /**
+     * Teste la méthode Create avec des paramètres invalides
+     */
+    @Test
+    public abstract void testCreateI();
 
     /**
      * Teste la méthode Read
@@ -52,10 +54,16 @@ public abstract class ModelTest {
     public abstract void testRead();
 
     /**
-     * Teste la méthode Update
+     * Teste la méthode Update avec des paramètres valides
      */
     @Test
-    public abstract void testUpdate();
+    public abstract void testUpdateV();
+
+    /**
+     * Teste la méthode Update avec des paramètres invalides
+     */
+    @Test
+    public abstract void testUpdateI();
 
     /**
      * Teste la méthode Delete
