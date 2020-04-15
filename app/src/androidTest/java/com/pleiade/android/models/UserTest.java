@@ -9,37 +9,71 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
-import static org.junit.Assume.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assume.assumeTrue;
 
 public class UserTest extends ModelTest {
 
     /**
-     * Teste la création d'un utilisateur avec :
-     * paramètres valides,
-     * paramètres invalides,
-     * paramètres manquants
+     * Teste la création valide d'un utilisateur
      */
     @Override
-    public void testCreate() throws ExecutionException, InterruptedException {
+    public void testCreateV() throws ExecutionException, InterruptedException {
+        FirebaseTestManager.firebaseAuthLogout(auth);
+        assumeTrue(auth.getCurrentUser() == null);
+
         Map<String, Object> userMap = new HashMap<>();
         userMap.put("firstName", "Charlotte");
         userMap.put("lastName", "Corday");
         userMap.put("tag", "charlotte");
         userMap.put("profilePictureUri", "profilePictures/charlotte.png");
 
-        // Create valide
-
         User user = new User();
         user.create(userMap);
         Task<DocumentSnapshot> t = user.getRef().get();
         Tasks.await(t);
+
+        assertNotNull(auth.getCurrentUser());
         assertNotNull(t.getResult());
-        assertEquals("Enregistrement du prénom", "Charlotte", t.getResult().get("firstName"));
-        assertEquals("Enregistrement du nom", "Corday", t.getResult().get("lastName"));
-        assertEquals("Enregitrement du tag", "charlotte", t.getResult().get("tag"));
-        assertEquals( "Enregistrement de l'image de profil", "profilePictures/charlotte.png", t.getResult().get("profilePictureUri"));
-        assertEquals("Enregistrement de l'email", FirebaseTestManager.USER1_EMAIL, t.getResult().get("email"));
+        assertEquals(
+                "Enregistrement du prénom -",
+                "Carlotte",
+                t.getResult().get("firstName"));
+        assertEquals(
+                "Enregistrement du nom -",
+                "Corday",
+                t.getResult().get("lastName"));
+        assertEquals("Enregitrement du tag -",
+                "charlotte",
+                t.getResult().get("tag"));
+        assertEquals(
+                "Enregistrement de l'image de profil -",
+                "profilePictures/charlotte.png",
+                t.getResult().get("profilePictureUri"));
+        assertEquals(
+                "Enregistrement de l'email -",
+                FirebaseTestManager.USER1_EMAIL,
+                t.getResult().get("email"));
+        assertEquals(
+                "Mise à jour du displayName utilisateur -",
+                auth.getCurrentUser().getDisplayName(),
+                t.getResult().get("tag"));
+        assertEquals(
+                "Mise à jour de la photoUri utilisateur -",
+                String.valueOf(auth.getCurrentUser().getPhotoUrl()),
+                t.getResult().get("profilePictureUri"));
+        assertEquals("Mise à jour de l'email -",
+                auth.getCurrentUser().getEmail(),
+                t.getResult().get("email"));
+    }
+
+    /**
+     * Teste la création invalide d'un utilisateur
+     */
+    @Override
+    public void testCreateI(){
+
     }
 
     /**
@@ -51,12 +85,18 @@ public class UserTest extends ModelTest {
     }
 
     /**
-     * Teste la mise à jour d'un utilisateur avec :
-     * paramètres valides,
-     * paramètres invalides
+     * Teste la mise à jour valide d'un utlilisateur
      */
     @Override
-    public void testUpdate() {
+    public void testUpdateV() {
+
+    }
+
+    /**
+     * Teste la mise à jour invalide d'un utilisateur
+     */
+    @Override
+    public void testUpdateI(){
 
     }
 
