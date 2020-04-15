@@ -5,6 +5,9 @@ import com.google.firebase.Timestamp;
 
 import java.util.Map;
 
+/**
+ * Modèlisation d'un utilisateur
+ */
 public class User extends Model {
 
     private String firstName, lastName, email, tag, profilePictureUri;
