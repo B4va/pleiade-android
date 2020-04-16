@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
  * Classe utilitaire d'initialisation et de paramétrage
  * des instances Firebase
  */
-public class FirebaseTestManager {
+public class FirebaseTestHelper {
 
     private static final int AUTH_TIMEOUT = 3;
     public static final String USER1_FIRST_NAME = "Charlotte";
