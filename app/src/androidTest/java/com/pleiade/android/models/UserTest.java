@@ -4,7 +4,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.pleiade.android.utils.FirebaseTestManager;
+import com.pleiade.android.utils.FirebaseTestHelper;
 
 import org.junit.Test;
 
@@ -32,11 +32,11 @@ public class UserTest extends ModelTest {
         super.testCreateV(); // Login USER1
         assumeNotNull(auth.getCurrentUser());
         assumeNotNull(auth.getCurrentUser().getEmail());
-        assumeTrue(auth.getCurrentUser().getEmail().equals(FirebaseTestManager.USER1_EMAIL));
+        assumeTrue(auth.getCurrentUser().getEmail().equals(FirebaseTestHelper.USER1_EMAIL));
 
         Map<String, Object> userMap = new HashMap<>();
-        userMap.put("firstName", FirebaseTestManager.USER1_FIRST_NAME);
-        userMap.put("lastName", FirebaseTestManager.USER1_LAST_NAME);
+        userMap.put("firstName", FirebaseTestHelper.USER1_FIRST_NAME);
+        userMap.put("lastName", FirebaseTestHelper.USER1_LAST_NAME);
 
         User user = new User();
         user.create(userMap);
@@ -47,22 +47,22 @@ public class UserTest extends ModelTest {
         assertNotNull(t.getResult());
         assertEquals(
                 "Enregistrement du prénom",
-                FirebaseTestManager.USER1_FIRST_NAME,
+                FirebaseTestHelper.USER1_FIRST_NAME,
                 t.getResult().get("firstName"));
         assertEquals(
                 "Enregistrement du nom",
-                FirebaseTestManager.USER1_LAST_NAME,
+                FirebaseTestHelper.USER1_LAST_NAME,
                 t.getResult().get("lastName"));
         assertEquals("Enregitrement du tag",
-                FirebaseTestManager.USER1_DISPLAY_NAME,
+                FirebaseTestHelper.USER1_DISPLAY_NAME,
                 t.getResult().get("tag"));
         assertEquals(
                 "Enregistrement de l'image de profil",
-                FirebaseTestManager.USER_PHOTO_URI.toString(),
+                FirebaseTestHelper.USER_PHOTO_URI.toString(),
                 t.getResult().get("profilePictureUri"));
         assertEquals(
                 "Enregistrement de l'email",
-                FirebaseTestManager.USER1_EMAIL,
+                FirebaseTestHelper.USER1_EMAIL,
                 t.getResult().get("email"));
     }
 
@@ -75,7 +75,7 @@ public class UserTest extends ModelTest {
         super.testCreateI(); // Login USER1
         assumeNotNull(auth.getCurrentUser());
         assumeNotNull(auth.getCurrentUser().getEmail());
-        assumeTrue(auth.getCurrentUser().getEmail().equals(FirebaseTestManager.USER1_EMAIL));
+        assumeTrue(auth.getCurrentUser().getEmail().equals(FirebaseTestHelper.USER1_EMAIL));
 
     }
 
@@ -88,7 +88,7 @@ public class UserTest extends ModelTest {
         super.testRead(); // Login USER1
         assumeNotNull(auth.getCurrentUser());
         assumeNotNull(auth.getCurrentUser().getEmail());
-        assumeTrue(auth.getCurrentUser().getEmail().equals(FirebaseTestManager.USER1_EMAIL));
+        assumeTrue(auth.getCurrentUser().getEmail().equals(FirebaseTestHelper.USER1_EMAIL));
 
         DocumentReference ref = db.collection("users").document(auth.getCurrentUser().getUid());
         User user = new User(ref);
@@ -98,22 +98,22 @@ public class UserTest extends ModelTest {
         assertNotNull(t.getResult());
         assertEquals(
                 "Lecture du prénom",
-                FirebaseTestManager.USER1_FIRST_NAME,
+                FirebaseTestHelper.USER1_FIRST_NAME,
                 t.getResult().get("firstName"));
         assertEquals(
                 "Lecture du nom",
-                FirebaseTestManager.USER1_LAST_NAME,
+                FirebaseTestHelper.USER1_LAST_NAME,
                 t.getResult().get("lastName"));
         assertEquals("Lecture du tag",
-                FirebaseTestManager.USER1_DISPLAY_NAME,
+                FirebaseTestHelper.USER1_DISPLAY_NAME,
                 t.getResult().get("tag"));
         assertEquals(
                 "Lecture de l'image de profil",
-                FirebaseTestManager.USER_PHOTO_URI.toString(),
+                FirebaseTestHelper.USER_PHOTO_URI.toString(),
                 t.getResult().get("profilePictureUri"));
         assertEquals(
                 "Lecture de l'email",
-                FirebaseTestManager.USER1_EMAIL,
+                FirebaseTestHelper.USER1_EMAIL,
                 t.getResult().get("email"));
     }
 
@@ -126,7 +126,7 @@ public class UserTest extends ModelTest {
         super.testUpdateV(); // Login USER1
         assumeNotNull(auth.getCurrentUser());
         assumeNotNull(auth.getCurrentUser().getEmail());
-        assumeTrue(auth.getCurrentUser().getEmail().equals(FirebaseTestManager.USER1_EMAIL));
+        assumeTrue(auth.getCurrentUser().getEmail().equals(FirebaseTestHelper.USER1_EMAIL));
     }
 
     /**
@@ -138,14 +138,14 @@ public class UserTest extends ModelTest {
         super.testUpdateI(); // Login USER1
         assumeNotNull(auth.getCurrentUser());
         assumeNotNull(auth.getCurrentUser().getEmail());
-        assumeTrue(auth.getCurrentUser().getEmail().equals(FirebaseTestManager.USER1_EMAIL));
+        assumeTrue(auth.getCurrentUser().getEmail().equals(FirebaseTestHelper.USER1_EMAIL));
 
         DocumentReference ref = db.collection("users").document(auth.getCurrentUser().getUid());
         User user = new User(ref);
 
         Map<String, Object> userMap = new HashMap<>();
-        userMap.put("firstName", FirebaseTestManager.USER2_FIRST_NAME);
-        userMap.put("lastName", FirebaseTestManager.USER2_LAST_NAME);
+        userMap.put("firstName", FirebaseTestHelper.USER2_FIRST_NAME);
+        userMap.put("lastName", FirebaseTestHelper.USER2_LAST_NAME);
         user.update(userMap);
         Task<DocumentSnapshot> t = user.read();
         Tasks.await(t);
@@ -153,22 +153,22 @@ public class UserTest extends ModelTest {
         assertNotNull(t.getResult());
         assertEquals(
                 "Lecture du prénom",
-                FirebaseTestManager.USER2_FIRST_NAME,
+                FirebaseTestHelper.USER2_FIRST_NAME,
                 t.getResult().get("firstName"));
         assertEquals(
                 "Lecture du nom",
-                FirebaseTestManager.USER2_LAST_NAME,
+                FirebaseTestHelper.USER2_LAST_NAME,
                 t.getResult().get("lastName"));
         assertEquals("Lecture du tag",
-                FirebaseTestManager.USER1_DISPLAY_NAME,
+                FirebaseTestHelper.USER1_DISPLAY_NAME,
                 t.getResult().get("tag"));
         assertEquals(
                 "Lecture de l'image de profil",
-                FirebaseTestManager.USER_PHOTO_URI.toString(),
+                FirebaseTestHelper.USER_PHOTO_URI.toString(),
                 t.getResult().get("profilePictureUri"));
         assertEquals(
                 "Lecture de l'email",
-                FirebaseTestManager.USER1_EMAIL,
+                FirebaseTestHelper.USER1_EMAIL,
                 t.getResult().get("email"));
     }
 
@@ -181,7 +181,7 @@ public class UserTest extends ModelTest {
         super.testDelete(); // Login USER1
         assumeNotNull(auth.getCurrentUser());
         assumeNotNull(auth.getCurrentUser().getEmail());
-        assumeTrue(auth.getCurrentUser().getEmail().equals(FirebaseTestManager.USER1_EMAIL));
+        assumeTrue(auth.getCurrentUser().getEmail().equals(FirebaseTestHelper.USER1_EMAIL));
 
     }
 
@@ -196,8 +196,8 @@ public class UserTest extends ModelTest {
 
         // Create
         Map<String, Object> userMap = new HashMap<>();
-        userMap.put("firstName", FirebaseTestManager.USER1_FIRST_NAME);
-        userMap.put("lastName", FirebaseTestManager.USER1_LAST_NAME);
+        userMap.put("firstName", FirebaseTestHelper.USER1_FIRST_NAME);
+        userMap.put("lastName", FirebaseTestHelper.USER1_LAST_NAME);
 
         User user = new User();
         assertThrows(
@@ -229,6 +229,6 @@ public class UserTest extends ModelTest {
         super.testGenericAuthActions(); // Login USER2
         assumeNotNull(auth.getCurrentUser());
         assumeNotNull(auth.getCurrentUser().getEmail());
-        assumeTrue(auth.getCurrentUser().getEmail().equals(FirebaseTestManager.USER2_EMAIL));
+        assumeTrue(auth.getCurrentUser().getEmail().equals(FirebaseTestHelper.USER2_EMAIL));
     }
 }
