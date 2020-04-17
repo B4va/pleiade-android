@@ -84,7 +84,7 @@ public class User extends Model {
      * @return tâche de mise à jour de l'utilisateur
      */
     @Override
-    public Task<Void> update(Map<String, Object> modelMap) {
+    public Task<DocumentSnapshot> update(Map<String, Object> modelMap) {
         if (modelMap.containsKey("email")){
             try {
                 Tasks.await(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser())
@@ -95,9 +95,8 @@ public class User extends Model {
             }
         }
         addModifiedTimestamp(modelMap);
-        Task<Void> t = ref.update(modelMap);
-        read();
-        return t;
+        ref.update(modelMap);
+        return this.read();
     }
 
     /**
