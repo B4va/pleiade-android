@@ -19,7 +19,7 @@ public abstract class Model {
      * @param modelMap champs et valeurs
      * @return tâche de création du modèle
      */
-    public abstract Task<Void> create(Map<String, Object> modelMap);
+    public abstract Task<DocumentSnapshot> create(Map<String, Object> modelMap);
 
     /**
      * Accède aux données du modèles
@@ -36,9 +36,8 @@ public abstract class Model {
 
     /**
      * Supprime le modèle
-     * @return tâche de suppression du modèle
      */
-    public abstract Task<Void> delete();
+    public abstract void delete();
 
     /**
      * Retourne la référence Firestore du modèle

@@ -1,13 +1,16 @@
 package com.pleiade.android.models;
 
+import android.util.Log;
+
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.pleiade.android.utils.FirebaseTestHelper;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,6 +27,7 @@ import static org.junit.Assume.assumeNotNull;
  * Tests du modèle User
  * @see User
  */
+@FixMethodOrder(MethodSorters.JVM)
 public class UserTest extends ModelTest {
 
     private static final String USER1_FIRST_NAME = "Charlotte";
@@ -35,20 +39,22 @@ public class UserTest extends ModelTest {
     private static final String USER1_TAG = "user1";
     private static final String USER2_TAG = "user2";
 
+    private static User user;
+
     /**
      * Initialise le(s) modèle(s) de test
-     * @return utilisateur test
      */
     @Override
-    public User initializeModels() {
+    @Before
+    public void initializeModels() throws Exception {
         Map<String, Object> userMap = new HashMap<>();
         userMap.put("firstName", USER1_FIRST_NAME);
         userMap.put("lastName", USER1_LAST_NAME);
         userMap.put("tag", USER1_TAG);
         userMap.put("profilePictureUri", USER1_PROFILE_PIC_URI);
-        User user = new User();
-        user.create(userMap);
-        return user;
+        user = new User();
+        Task<DocumentSnapshot> t = user.create(userMap);
+        Tasks.await(t);
     }
 
     /**
@@ -56,10 +62,16 @@ public class UserTest extends ModelTest {
      */
     @Override
     @Test
-    public void testCreateV() throws Exception {
-        super.testCreateV(); // Login USER1
+    public void testA_CreateV() throws Exception {
+        super.testA_CreateV(); // Login USER1
 
-        User user = initializeModels(); // Initialise le modèle de test
+        Map<String, Object> userMap = new HashMap<>();
+        userMap.put("firstName", USER1_FIRST_NAME);
+        userMap.put("lastName", USER1_LAST_NAME);
+        userMap.put("tag", USER1_TAG);
+        userMap.put("profilePictureUri", USER1_PROFILE_PIC_URI);
+        user = new User();
+        Tasks.await(user.create(userMap));
 
         /* TESTS */
         assertNotNull("Accès à la référence de l'utilisateur", user.getRef());
@@ -104,8 +116,8 @@ public class UserTest extends ModelTest {
      */
     @Override
     @Test
-    public void testCreateI() throws Exception {
-        super.testCreateI(); // Login USER1
+    public void testB_CreateI() throws Exception {
+        super.testB_CreateI(); // Login USER1
 
     }
 
@@ -114,10 +126,8 @@ public class UserTest extends ModelTest {
      */
     @Override
     @Test
-    public void testRead() throws Exception {
-        super.testRead(); // Login USER1
-
-        User user = initializeModels(); // Initialise le modèle de test
+    public void testC_Read() throws Exception {
+        super.testC_Read(); // Login USER1
 
         /* TESTS */
         Task<DocumentSnapshot> t = user.read();
@@ -161,10 +171,8 @@ public class UserTest extends ModelTest {
      */
     @Override
     @Test
-    public void testUpdateV() throws Exception {
-        super.testUpdateV(); // Login USER1
-
-        User user = initializeModels(); // Initialise le modèle de test
+    public void testD_UpdateV() throws Exception {
+        super.testD_UpdateV(); // Login USER1
 
         /* TESTS */
         allFieldsUpdate(user);
@@ -346,8 +354,8 @@ public class UserTest extends ModelTest {
      */
     @Override
     @Test
-    public void testUpdateI() throws Exception {
-        super.testUpdateI(); // Login USER1
+    public void testE_UpdateI() throws Exception {
+        super.testE_UpdateI(); // Login USER1
 
     }
 
@@ -356,13 +364,12 @@ public class UserTest extends ModelTest {
      */
     @Override
     @Test
-    public void testDelete() throws Exception {
-        super.testDelete(); // Login USER1
-
-        User user = initializeModels(); // Initialise le modèle de test
+    public void testF_Delete() throws Exception {
+        super.testF_Delete(); // Login USER1
 
         /* TESTS */
         user.delete();
+        Thread.sleep(8000);
         assertNull("Utilisateur déconnecté", auth.getCurrentUser());
         assertThrows(
                 "Erreur lors de la tentative de reconnexion",
@@ -372,14 +379,12 @@ public class UserTest extends ModelTest {
                 FirebaseTestHelper.USER1_EMAIL,
                 FirebaseTestHelper.USER_PASSWORD
         ));
-        assertThrows(
+        Task<DocumentSnapshot> t = user.read();
+        Tasks.await(t);
+        Log.i("TESTDB", String.valueOf(Objects.requireNonNull(t.getResult()).get("firstName")));
+        assertNull(
                 "Erreur lors de l'accès aux données utilisateur",
-                Exception.class,
-                () -> {
-                    Task<DocumentSnapshot> t = user.getRef().get();
-                    Tasks.await(t);
-                    Objects.requireNonNull(t.getResult()).get("firstName");
-                }
+                Objects.requireNonNull(t.getResult()).get("lastName")
         );
     }
 
@@ -388,11 +393,10 @@ public class UserTest extends ModelTest {
      */
     @Override
     @Test
-    public void testWrongAuthActions() throws Exception {
+    public void testG_WrongAuthActions() throws Exception {
         super.authentication(); // Login USER1
-        User user= initializeModels(); // Initialise le modèle de test
 
-        super.testWrongAuthActions(); // Login USER2
+        super.testG_WrongAuthActions(); // Login USER2
 
         Map<String, Object> userMap = new HashMap<>();
         userMap.put("firstName", USER1_FIRST_NAME);
@@ -431,13 +435,15 @@ public class UserTest extends ModelTest {
         );
     }
 
+    /**
+     * Teste le CRUD sans authentification
+     */
     @Override
     @Test
-    public void testNoAuthActions() throws Exception {
+    public void testH_NoAuthActions() throws Exception {
         super.authentication(); // Login USER1
-        User user= initializeModels(); // Initialise le modèle de test
 
-        super.testNoAuthActions(); // Logout
+        super.testH_NoAuthActions(); // Logout
 
         Map<String, Object> userMap = new HashMap<>();
         userMap.put("firstName", USER1_FIRST_NAME);

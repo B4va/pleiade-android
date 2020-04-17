@@ -1,12 +1,10 @@
 package com.pleiade.android.models;
 
-import android.util.Log;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.pleiade.android.utils.FirebaseTestHelper;
 
-import org.junit.AfterClass;
+import org.junit.After;
 import org.junit.BeforeClass;
 
 import static org.junit.Assume.assumeNotNull;
@@ -34,62 +32,62 @@ public abstract class ModelTest {
     /**
      * Efface les données de test
      */
-    @AfterClass
-    public static void tearDown(){
+    @After
+    public void tearDown(){
         FirebaseTestHelper.clearFirebaseFirestoreEmulator();
     }
 
     /**
      * Initialise les modèles de test pour chaque test
      */
-    public abstract Object initializeModels();
+    public abstract void initializeModels() throws Exception;
 
     /**
      * Teste la méthode Create avec des paramètres valides
      */
-    public void testCreateV() throws Exception {
+    public void testA_CreateV() throws Exception {
         authentication();
     }
 
     /**
      * Teste la méthode Create avec des paramètres invalides
      */
-    public void testCreateI() throws Exception {
+    public void testB_CreateI() throws Exception {
         authentication();
     }
 
     /**
      * Teste la méthode Read
      */
-    public void testRead() throws Exception {
+    public void testC_Read() throws Exception {
         authentication();
     }
 
     /**
      * Teste la méthode Update avec des paramètres valides
      */
-    public void testUpdateV() throws Exception {
+    public void testD_UpdateV() throws Exception {
         authentication();
     }
 
     /**
      * Teste la méthode Update avec des paramètres invalides
      */
-    public void testUpdateI() throws Exception {
+    public void testE_UpdateI() throws Exception {
         authentication();
     }
 
     /**
      * Teste la méthode Delete
      */
-    public void testDelete() throws Exception {
+    public void testF_Delete() throws Exception {
         authentication();
     }
 
     /**
      * Teste le CRUD avec l'authentification d'un utilisateur tiers
      */
-    public void testWrongAuthActions() throws Exception {
+    public void testG_WrongAuthActions() throws Exception {
         FirebaseTestHelper.firebaseAuthLogin(
                 auth,
                 FirebaseTestHelper.USER2_EMAIL,
@@ -103,7 +101,7 @@ public abstract class ModelTest {
     /**
      * Teste le CRUD avec l'authentification d'un utilisateur tiers
      */
-    public void testNoAuthActions() throws Exception {
+    public void testH_NoAuthActions() throws Exception {
         FirebaseTestHelper.firebaseAuthLogout(auth);
         assumeTrue(FirebaseAuth.getInstance().getCurrentUser() == null);
     }

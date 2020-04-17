@@ -44,19 +44,15 @@ public class User extends Model {
      * @return tâche de création de l'utilisateur
      */
     @Override
-    public Task<Void> create(Map<String, Object> modelMap) {
-        firstName = (String) modelMap.get("firstName");
-        lastName = (String) modelMap.get("lastName");
-        email = (String) modelMap.get("email");
-        tag = (String) modelMap.get("tag");
-        profilePictureUri = (String) modelMap.get("profilePictureUri");
+    public Task<DocumentSnapshot> create(Map<String, Object> modelMap) {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         ref = FirebaseFirestore.getInstance()
             .collection("users")
             .document(Objects.requireNonNull(user).getUid());
         modelMap.put("email", user.getEmail());
         addCreatedTimestamps(modelMap);
-        return ref.set(modelMap);
+        ref.set(modelMap);
+        return read();
     }
 
     /**
@@ -101,13 +97,12 @@ public class User extends Model {
 
     /**
      * Supprime l'utilisateur
-     * @return tâche de suppression de l'utilisateur
      */
     @Override
-    public Task<Void> delete() {
+    public void delete() {
         Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).delete();
         FirebaseAuth.getInstance().signOut();
-        return ref.delete();
+        ref.delete();
     }
 
     /**
