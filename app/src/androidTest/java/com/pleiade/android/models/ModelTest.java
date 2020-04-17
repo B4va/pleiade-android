@@ -22,14 +22,21 @@ public abstract class ModelTest {
     @BeforeClass
     public static void setup() throws Exception {
         FirebaseTestHelper.initializeFirebaseApp();
-        db = FirebaseFirestore.getInstance();
         db = FirebaseTestHelper.initializeFirebaseFirestoreEmulator();
         auth = FirebaseTestHelper.initializeFirebaseAuth();
-        FirebaseTestHelper.firebaseAuthLogin(
-                auth,
-                FirebaseTestHelper.USER1_EMAIL,
-                FirebaseTestHelper.USER_PASSWORD
-        );
+        try {
+            FirebaseTestHelper.firebaseAuthLogin(
+                    auth,
+                    FirebaseTestHelper.USER1_EMAIL,
+                    FirebaseTestHelper.USER_PASSWORD
+            );
+        } catch (Exception e){
+            FirebaseTestHelper.firebaseAuthLogin(
+                    auth,
+                    FirebaseTestHelper.USER3_EMAIL,
+                    FirebaseTestHelper.USER_PASSWORD
+            );
+        }
     }
 
     /**
