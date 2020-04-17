@@ -1,7 +1,6 @@
 package com.pleiade.android.utils;
 
 import android.content.Context;
-import android.net.Uri;
 
 import androidx.test.core.app.ApplicationProvider;
 
@@ -12,6 +11,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 
 import java.util.Objects;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -21,16 +21,11 @@ import java.util.concurrent.TimeUnit;
 public class FirebaseTestHelper {
 
     private static final int AUTH_TIMEOUT = 3;
-    public static final String USER1_FIRST_NAME = "Charlotte";
-    public static final String USER2_FIRST_NAME = "Jean";
-    public static final String USER1_LAST_NAME = "Corday";
-    public static final String USER2_LAST_NAME = "Jaurès";
+
     public static final String USER1_EMAIL = "user1@mail.com";
     public static final String USER2_EMAIL = "user2@mail.com";
+    public static final String USER3_EMAIL = "user3@mail.com";
     public static final String USER_PASSWORD = "123456";
-    public static final Uri USER_PHOTO_URI = Uri.parse("test/test/test");
-    public static final String USER1_DISPLAY_NAME = "user1";
-    public static final String USER2_DISPLAY_NAME = "user2";
 
     /**
      * Initialise l'application Firebase
@@ -48,7 +43,7 @@ public class FirebaseTestHelper {
         FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
                 .setHost("localhost:8080")
                 .setSslEnabled(false)
-                .setPersistenceEnabled(true)
+                .setPersistenceEnabled(false)
                 .build();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.setFirestoreSettings(settings);
@@ -63,11 +58,22 @@ public class FirebaseTestHelper {
     }
 
     /**
-     * Initialise FirebaseAuth
+     * Initialise FirebaseAuth et crée deux utilisateurs
      * @return instance FirebaseAuth
      */
-    public static FirebaseAuth initializeFirebaseAuth(){
-        return FirebaseAuth.getInstance();
+    public static FirebaseAuth initializeFirebaseAuth() throws ExecutionException, InterruptedException {
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        try{
+            Tasks.await(auth.signInWithEmailAndPassword(USER1_EMAIL, USER_PASSWORD));
+        } catch (Exception e){
+            Tasks.await(auth.createUserWithEmailAndPassword(USER1_EMAIL, USER_PASSWORD));
+        }
+        try{
+            Tasks.await(auth.signInWithEmailAndPassword(USER2_EMAIL, USER_PASSWORD));
+        } catch (Exception e){
+            Tasks.await(auth.createUserWithEmailAndPassword(USER2_EMAIL, USER_PASSWORD));
+        }
+        return auth;
     }
 
     /**

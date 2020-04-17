@@ -10,9 +10,12 @@ import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.ExecutionException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assume.assumeNotNull;
 import static org.junit.Assume.assumeTrue;
@@ -22,6 +25,15 @@ import static org.junit.Assume.assumeTrue;
  * @see User
  */
 public class UserTest extends ModelTest {
+
+    public static final String USER1_FIRST_NAME = "Charlotte";
+    public static final String USER2_FIRST_NAME = "Jean";
+    public static final String USER1_LAST_NAME = "Corday";
+    public static final String USER2_LAST_NAME = "Jaurès";
+    public static final String USER1_PROFILE_PIC_URI = "test/test/test1";
+    public static final String USER2_PROFILE_PIC_URI = "test/test/test2";
+    public static final String USER1_TAG = "user1";
+    public static final String USER2_TAG = "user2";
 
     /**
      * Teste la création valide d'un utilisateur
@@ -35,8 +47,10 @@ public class UserTest extends ModelTest {
         assumeTrue(auth.getCurrentUser().getEmail().equals(FirebaseTestHelper.USER1_EMAIL));
 
         Map<String, Object> userMap = new HashMap<>();
-        userMap.put("firstName", FirebaseTestHelper.USER1_FIRST_NAME);
-        userMap.put("lastName", FirebaseTestHelper.USER1_LAST_NAME);
+        userMap.put("firstName", USER1_FIRST_NAME);
+        userMap.put("lastName", USER1_LAST_NAME);
+        userMap.put("tag", USER1_TAG);
+        userMap.put("profilePictureUri", USER1_PROFILE_PIC_URI);
 
         User user = new User();
         user.create(userMap);
@@ -44,26 +58,37 @@ public class UserTest extends ModelTest {
         Task<DocumentSnapshot> t = user.getRef().get();
         Tasks.await(t);
 
-        assertNotNull(t.getResult());
+        assertNotNull("Résultats de la lecture", t.getResult());
         assertEquals(
                 "Enregistrement du prénom",
-                FirebaseTestHelper.USER1_FIRST_NAME,
-                t.getResult().get("firstName"));
+                USER1_FIRST_NAME,
+                t.getResult().get("firstName")
+        );
         assertEquals(
                 "Enregistrement du nom",
-                FirebaseTestHelper.USER1_LAST_NAME,
-                t.getResult().get("lastName"));
-        assertEquals("Enregitrement du tag",
-                FirebaseTestHelper.USER1_DISPLAY_NAME,
-                t.getResult().get("tag"));
+                USER1_LAST_NAME,
+                t.getResult().get("lastName")
+        );
+        assertEquals(
+                "Enregistrement du tag",
+                USER1_TAG,
+                t.getResult().get("tag")
+        );
         assertEquals(
                 "Enregistrement de l'image de profil",
-                FirebaseTestHelper.USER_PHOTO_URI.toString(),
-                t.getResult().get("profilePictureUri"));
+                USER1_PROFILE_PIC_URI,
+                t.getResult().get("profilePictureUri")
+        );
         assertEquals(
                 "Enregistrement de l'email",
                 FirebaseTestHelper.USER1_EMAIL,
-                t.getResult().get("email"));
+                t.getResult().get("email")
+        );
+        assertEquals(
+                "Objet initialisé",
+                USER1_FIRST_NAME,
+                user.getFirstName()
+        );
     }
 
     /**
@@ -76,7 +101,6 @@ public class UserTest extends ModelTest {
         assumeNotNull(auth.getCurrentUser());
         assumeNotNull(auth.getCurrentUser().getEmail());
         assumeTrue(auth.getCurrentUser().getEmail().equals(FirebaseTestHelper.USER1_EMAIL));
-
     }
 
     /**
@@ -90,31 +114,48 @@ public class UserTest extends ModelTest {
         assumeNotNull(auth.getCurrentUser().getEmail());
         assumeTrue(auth.getCurrentUser().getEmail().equals(FirebaseTestHelper.USER1_EMAIL));
 
-        DocumentReference ref = db.collection("users").document(auth.getCurrentUser().getUid());
-        User user = new User(ref);
+        Map<String, Object> userMap = new HashMap<>();
+        userMap.put("firstName", USER1_FIRST_NAME);
+        userMap.put("lastName", USER1_LAST_NAME);
+        userMap.put("tag", USER1_TAG);
+        userMap.put("profilePictureUri", USER1_PROFILE_PIC_URI);
+        User user = new User();
+        user.create(userMap);
+
         Task<DocumentSnapshot> t = user.read();
         Tasks.await(t);
 
-        assertNotNull(t.getResult());
+        assertNotNull("Résultats de la lecture", t.getResult());
         assertEquals(
                 "Lecture du prénom",
-                FirebaseTestHelper.USER1_FIRST_NAME,
-                t.getResult().get("firstName"));
+                USER1_FIRST_NAME,
+                t.getResult().get("firstName")
+        );
         assertEquals(
                 "Lecture du nom",
-                FirebaseTestHelper.USER1_LAST_NAME,
-                t.getResult().get("lastName"));
-        assertEquals("Lecture du tag",
-                FirebaseTestHelper.USER1_DISPLAY_NAME,
-                t.getResult().get("tag"));
+                USER1_LAST_NAME,
+                t.getResult().get("lastName")
+        );
+        assertEquals(
+                "Lecture du tag",
+                USER1_TAG,
+                t.getResult().get("tag")
+        );
         assertEquals(
                 "Lecture de l'image de profil",
-                FirebaseTestHelper.USER_PHOTO_URI.toString(),
-                t.getResult().get("profilePictureUri"));
+                USER1_PROFILE_PIC_URI,
+                t.getResult().get("profilePictureUri")
+        );
         assertEquals(
                 "Lecture de l'email",
                 FirebaseTestHelper.USER1_EMAIL,
-                t.getResult().get("email"));
+                t.getResult().get("email")
+        );
+        assertEquals(
+                "Objet initialisé",
+                USER1_FIRST_NAME,
+                user.getFirstName()
+        );
     }
 
     /**
@@ -127,6 +168,190 @@ public class UserTest extends ModelTest {
         assumeNotNull(auth.getCurrentUser());
         assumeNotNull(auth.getCurrentUser().getEmail());
         assumeTrue(auth.getCurrentUser().getEmail().equals(FirebaseTestHelper.USER1_EMAIL));
+
+        Map<String, Object> userMap = new HashMap<>();
+        userMap.put("firstName", USER1_FIRST_NAME);
+        userMap.put("lastName", USER1_LAST_NAME);
+        userMap.put("tag", USER1_TAG);
+        userMap.put("profilePictureUri", USER1_PROFILE_PIC_URI);
+        User user = new User();
+        user.create(userMap);
+
+        allFieldsUpdate(user);
+        manyFieldsUpdate(user);
+        oneFieldUpdate(user);
+    }
+
+    /**
+     * Teste la mise à jour de tous les champs de l'utilisateur
+     * @param user utilisateur à mettre à jour
+     * @throws ExecutionException si erreur dans la tâche de mise à jour de l'email
+     * @throws InterruptedException si interruption de la tâche de mise à jour de l'email
+     */
+    private void allFieldsUpdate(User user) throws ExecutionException, InterruptedException {
+        Map<String, Object> userMap = new HashMap<>();
+        userMap.put("firstName", USER2_FIRST_NAME);
+        userMap.put("lastName", USER2_LAST_NAME);
+        userMap.put("tag", USER2_TAG);
+        userMap.put("profilePictureUri", USER2_PROFILE_PIC_URI);
+        userMap.put("email", FirebaseTestHelper.USER3_EMAIL);
+        Task<Void> update = user.update(userMap);
+        assumeNotNull(update);
+
+        Task<DocumentSnapshot> t = user.getRef().get();
+        Tasks.await(t);
+
+        assertNotNull("Résultats de la lecture", t.getResult());
+        assertEquals(
+                "Email modifié dans FirebaseAuth",
+                FirebaseTestHelper.USER3_EMAIL,
+                Objects.requireNonNull(auth.getCurrentUser()).getEmail()
+        );
+        assertEquals(
+                "Mise à jour du prénom",
+                USER2_FIRST_NAME,
+                t.getResult().get("firstName")
+        );
+        assertEquals(
+                "Mise à jour du nom",
+                USER2_LAST_NAME,
+                t.getResult().get("lastName")
+        );
+        assertEquals(
+                "Mise à jour du tag",
+                USER2_TAG,
+                t.getResult().get("tag")
+        );
+        assertEquals(
+                "Mise à jour de l'image de profil",
+                USER2_PROFILE_PIC_URI,
+                t.getResult().get("profilePictureUri")
+        );
+        assertEquals(
+                "Mise à jour de l'email",
+                FirebaseTestHelper.USER3_EMAIL,
+                t.getResult().get("email")
+        );
+        assertEquals(
+                "Objet initialisé",
+                USER2_FIRST_NAME,
+                user.getFirstName()
+        );
+        reinitUser(user);
+    }
+
+
+    /**
+     * Teste la mise à jour d'un seul champ de l'utilisateur
+     * @param user utilisateur à mettre à jour
+     * @throws ExecutionException si erreur dans la tâche de mise à jour de l'email
+     * @throws InterruptedException si interruption de la tâche de mise à jour de l'email
+     */
+    private void oneFieldUpdate(User user) throws ExecutionException, InterruptedException {
+        Map<String, Object> userMap = new HashMap<>();
+        userMap.put("firstName", USER2_FIRST_NAME);
+        Task<Void> update = user.update(userMap);
+        assumeNotNull(update);
+
+        Task<DocumentSnapshot> t = user.getRef().get();
+        Tasks.await(t);
+
+        assertNotNull("Résultats de la lecture", t.getResult());
+        assertEquals(
+                "Mise à jour du prénom",
+                USER2_FIRST_NAME,
+                t.getResult().get("firstName")
+        );
+        assertEquals(
+                "Conservation du nom",
+                USER1_LAST_NAME,
+                t.getResult().get("lastName")
+        );
+        assertEquals(
+                "Conservation du tag",
+                USER1_TAG,
+                t.getResult().get("tag")
+        );
+        assertEquals(
+                "Conservation de l'image de profil",
+                USER1_PROFILE_PIC_URI,
+                t.getResult().get("profilePictureUri")
+        );
+        assertEquals(
+                "Conservation de l'email",
+                FirebaseTestHelper.USER1_EMAIL,
+                t.getResult().get("email")
+        );
+        assertEquals(
+                "Objet initialisé",
+                USER2_FIRST_NAME,
+                user.getFirstName()
+        );
+        reinitUser(user);
+    }
+
+    /**
+     * Teste la mise à jour de plusieurs champs de l'utilisateur
+     * @param user utilisateur à mettre à jour
+     * @throws ExecutionException si erreur dans la tâche de mise à jour de l'email
+     * @throws InterruptedException si interruption de la tâche de mise à jour de l'email
+     */
+    private void manyFieldsUpdate(User user) throws ExecutionException, InterruptedException {
+        Map<String, Object> userMap = new HashMap<>();
+        userMap.put("firstName", USER2_FIRST_NAME);
+        userMap.put("lastName", USER2_LAST_NAME);
+        Task<Void> update = user.update(userMap);
+        assumeNotNull(update);
+
+        Task <DocumentSnapshot> t = user.getRef().get();
+        Tasks.await(t);
+
+        assertNotNull("Résultats de la lecture", t.getResult());
+        assertEquals(
+                "Mise à jour du prénom",
+                USER2_FIRST_NAME,
+                t.getResult().get("firstName")
+        );
+        assertEquals(
+                "Mise à jour du nom",
+                USER2_LAST_NAME,
+                t.getResult().get("lastName")
+        );
+        assertEquals(
+                "Conservation du tag",
+                USER1_TAG,
+                t.getResult().get("tag")
+        );
+        assertEquals(
+                "Conservation de l'image de profil",
+                USER1_PROFILE_PIC_URI,
+                t.getResult().get("profilePictureUri")
+        );
+        assertEquals(
+                "Conservation de l'email",
+                FirebaseTestHelper.USER1_EMAIL,
+                t.getResult().get("email")
+        );
+        assertEquals(
+                "Objet initialisé",
+                USER2_FIRST_NAME,
+                user.getFirstName()
+        );
+        reinitUser(user);
+    }
+
+    /**
+     * Réinitialise les données initiales de l'utilisateur
+     * @param user utilisateur à mettre à jour
+     */
+    private void reinitUser(User user){
+        Map<String, Object> userMap = new HashMap<>();
+        userMap.put("firstName", USER1_FIRST_NAME);
+        userMap.put("lastName", USER1_LAST_NAME);
+        userMap.put("tag", USER1_TAG);
+        userMap.put("profilePictureUri", USER1_PROFILE_PIC_URI);
+        userMap.put("email", FirebaseTestHelper.USER1_EMAIL);
+        user.update(userMap);
     }
 
     /**
@@ -139,37 +364,6 @@ public class UserTest extends ModelTest {
         assumeNotNull(auth.getCurrentUser());
         assumeNotNull(auth.getCurrentUser().getEmail());
         assumeTrue(auth.getCurrentUser().getEmail().equals(FirebaseTestHelper.USER1_EMAIL));
-
-        DocumentReference ref = db.collection("users").document(auth.getCurrentUser().getUid());
-        User user = new User(ref);
-
-        Map<String, Object> userMap = new HashMap<>();
-        userMap.put("firstName", FirebaseTestHelper.USER2_FIRST_NAME);
-        userMap.put("lastName", FirebaseTestHelper.USER2_LAST_NAME);
-        user.update(userMap);
-        Task<DocumentSnapshot> t = user.read();
-        Tasks.await(t);
-
-        assertNotNull(t.getResult());
-        assertEquals(
-                "Lecture du prénom",
-                FirebaseTestHelper.USER2_FIRST_NAME,
-                t.getResult().get("firstName"));
-        assertEquals(
-                "Lecture du nom",
-                FirebaseTestHelper.USER2_LAST_NAME,
-                t.getResult().get("lastName"));
-        assertEquals("Lecture du tag",
-                FirebaseTestHelper.USER1_DISPLAY_NAME,
-                t.getResult().get("tag"));
-        assertEquals(
-                "Lecture de l'image de profil",
-                FirebaseTestHelper.USER_PHOTO_URI.toString(),
-                t.getResult().get("profilePictureUri"));
-        assertEquals(
-                "Lecture de l'email",
-                FirebaseTestHelper.USER1_EMAIL,
-                t.getResult().get("email"));
     }
 
     /**
@@ -183,6 +377,34 @@ public class UserTest extends ModelTest {
         assumeNotNull(auth.getCurrentUser().getEmail());
         assumeTrue(auth.getCurrentUser().getEmail().equals(FirebaseTestHelper.USER1_EMAIL));
 
+        DocumentReference ref = db.collection("users").document(auth.getCurrentUser().getUid());
+        Map<String, Object> userMap = new HashMap<>();
+        userMap.put("firstName", USER1_FIRST_NAME);
+        userMap.put("lastName", USER1_LAST_NAME);
+        userMap.put("tag", USER1_TAG);
+        userMap.put("profilePictureUri", USER1_PROFILE_PIC_URI);
+        User user = new User();
+        user.create(userMap);
+
+        user.delete();
+        assertNull("Utilisateur déconnecté", auth.getCurrentUser());
+        assertThrows(
+                "Erreur lors de la tentative de reconnexion",
+                Exception.class,
+                () -> FirebaseTestHelper.firebaseAuthLogin(
+                auth,
+                FirebaseTestHelper.USER1_EMAIL,
+                FirebaseTestHelper.USER_PASSWORD
+        ));
+        assertThrows(
+                "Erreur lors de l'accès aux données utilisateur",
+                Exception.class,
+                () -> {
+                    Task<DocumentSnapshot> t = ref.get();
+                    Tasks.await(t);
+                    Objects.requireNonNull(t.getResult()).get("firstName");
+                }
+        );
     }
 
     /**
@@ -195,29 +417,13 @@ public class UserTest extends ModelTest {
         assumeTrue(auth.getCurrentUser() == null);
 
         // Create
-        Map<String, Object> userMap = new HashMap<>();
-        userMap.put("firstName", FirebaseTestHelper.USER1_FIRST_NAME);
-        userMap.put("lastName", FirebaseTestHelper.USER1_LAST_NAME);
 
-        User user = new User();
-        assertThrows(
-                "Exception si création",
-                Exception.class,
-                () -> user.create(userMap));
 
         // Read
-        DocumentReference ref = db.collection("users").document();
-        assertThrows(
-                "Exception si lecture",
-                Exception.class,
-                () -> new User(ref).read());
+
 
         // Update
-        assertThrows(
-                "Exception si mise à jour",
-                Exception.class,
-                () -> new User(ref).update(userMap)
-        );
+
     }
 
     /**
@@ -230,5 +436,14 @@ public class UserTest extends ModelTest {
         assumeNotNull(auth.getCurrentUser());
         assumeNotNull(auth.getCurrentUser().getEmail());
         assumeTrue(auth.getCurrentUser().getEmail().equals(FirebaseTestHelper.USER2_EMAIL));
+
+        // Create
+
+
+        // Read
+
+
+        // Update
+
     }
 }
