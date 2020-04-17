@@ -7,6 +7,9 @@ import com.pleiade.android.utils.FirebaseTestHelper;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
+import static org.junit.Assume.assumeNotNull;
+import static org.junit.Assume.assumeTrue;
+
 /**
  * Ressources et méthodes de base pour le test des modèles
  */
@@ -24,19 +27,6 @@ public abstract class ModelTest {
         FirebaseTestHelper.initializeFirebaseApp();
         db = FirebaseTestHelper.initializeFirebaseFirestoreEmulator();
         auth = FirebaseTestHelper.initializeFirebaseAuth();
-        try {
-            FirebaseTestHelper.firebaseAuthLogin(
-                    auth,
-                    FirebaseTestHelper.USER1_EMAIL,
-                    FirebaseTestHelper.USER_PASSWORD
-            );
-        } catch (Exception e){
-            FirebaseTestHelper.firebaseAuthLogin(
-                    auth,
-                    FirebaseTestHelper.USER3_EMAIL,
-                    FirebaseTestHelper.USER_PASSWORD
-            );
-        }
     }
 
     /**
@@ -48,69 +38,50 @@ public abstract class ModelTest {
     }
 
     /**
+     * Initialise les modèles de test pour chaque test
+     */
+    public abstract Object initializeModels();
+
+    /**
      * Teste la méthode Create avec des paramètres valides
      */
     public void testCreateV() throws Exception {
-        FirebaseTestHelper.firebaseAuthLogin(
-                auth,
-                FirebaseTestHelper.USER1_EMAIL,
-                FirebaseTestHelper.USER_PASSWORD
-        );
+        authentication();
     }
 
     /**
      * Teste la méthode Create avec des paramètres invalides
      */
     public void testCreateI() throws Exception {
-        FirebaseTestHelper.firebaseAuthLogin(
-                auth,
-                FirebaseTestHelper.USER1_EMAIL,
-                FirebaseTestHelper.USER_PASSWORD
-        );
+        authentication();
     }
 
     /**
      * Teste la méthode Read
      */
     public void testRead() throws Exception {
-        FirebaseTestHelper.firebaseAuthLogin(
-                auth,
-                FirebaseTestHelper.USER1_EMAIL,
-                FirebaseTestHelper.USER_PASSWORD
-        );
+        authentication();
     }
 
     /**
      * Teste la méthode Update avec des paramètres valides
      */
     public void testUpdateV() throws Exception {
-        FirebaseTestHelper.firebaseAuthLogin(
-                auth,
-                FirebaseTestHelper.USER1_EMAIL,
-                FirebaseTestHelper.USER_PASSWORD
-        );
+        authentication();
     }
 
     /**
      * Teste la méthode Update avec des paramètres invalides
      */
     public void testUpdateI() throws Exception {
-        FirebaseTestHelper.firebaseAuthLogin(
-                auth,
-                FirebaseTestHelper.USER1_EMAIL,
-                FirebaseTestHelper.USER_PASSWORD
-        );
+        authentication();
     }
 
     /**
      * Teste la méthode Delete
      */
     public void testDelete() throws Exception {
-        FirebaseTestHelper.firebaseAuthLogin(
-                auth,
-                FirebaseTestHelper.USER1_EMAIL,
-                FirebaseTestHelper.USER_PASSWORD
-        );
+        authentication();
     }
 
     /**
@@ -118,6 +89,7 @@ public abstract class ModelTest {
      */
     public void testNoAuthActions() throws Exception {
         FirebaseTestHelper.firebaseAuthLogout(auth);
+        assumeTrue(auth.getCurrentUser() == null);
     }
 
     /**
@@ -129,6 +101,24 @@ public abstract class ModelTest {
                 FirebaseTestHelper.USER2_EMAIL,
                 FirebaseTestHelper.USER_PASSWORD
         );
+        assumeNotNull(auth.getCurrentUser());
+        assumeNotNull(auth.getCurrentUser().getEmail());
+        assumeTrue(auth.getCurrentUser().getEmail().equals(FirebaseTestHelper.USER2_EMAIL));
+    }
+
+    /**
+     * Authentifie un utilisateur
+     * @throws Exception erreur d'authentification
+     */
+    private void authentication() throws Exception {
+        FirebaseTestHelper.firebaseAuthLogin(
+                auth,
+                FirebaseTestHelper.USER1_EMAIL,
+                FirebaseTestHelper.USER_PASSWORD
+        );
+        assumeNotNull(auth.getCurrentUser());
+        assumeNotNull(auth.getCurrentUser().getEmail());
+        assumeTrue(auth.getCurrentUser().getEmail().equals(FirebaseTestHelper.USER1_EMAIL));
     }
 
 }
