@@ -5,6 +5,8 @@ import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.pleiade.android.utils.FirebaseTestHelper;
 
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -382,38 +384,94 @@ public class UserTest extends ModelTest {
     }
 
     /**
-     * Teste le CRUD sans authentification
-     */
-    @Override
-    @Test
-    public void testNoAuthActions() throws Exception {
-        super.testNoAuthActions(); // Logout
-
-        // Create
-
-
-        // Read
-
-
-        // Update
-
-    }
-
-    /**
      * Teste le CRUD avec l'authentification d'un utilisateur tiers
      */
     @Override
     @Test
-    public void testGenericAuthActions() throws Exception {
-        super.testGenericAuthActions(); // Login USER2
+    public void testWrongAuthActions() throws Exception {
+        super.authentication(); // Login USER1
+        User user= initializeModels(); // Initialise le modèle de test
+
+        super.testWrongAuthActions(); // Login USER2
+
+        Map<String, Object> userMap = new HashMap<>();
+        userMap.put("firstName", USER1_FIRST_NAME);
+        userMap.put("lastName", USER1_LAST_NAME);
+        userMap.put("tag", USER1_TAG);
+        userMap.put("profilePictureUri", USER1_PROFILE_PIC_URI);
+        userMap.put("email", FirebaseTestHelper.USER1_EMAIL);
 
         // Create
-
+        assertThrows(
+                "Création d'un utilisateur avec authentification tiers",
+                Exception.class,
+                () -> user.getRef().set(userMap)
+        );
 
         // Read
-
+        Task<DocumentSnapshot> t = user.read();
+        Tasks.await(t);
+        assertNotNull(
+                "Lecture d'un utilisateur avec authentification tiers",
+                t.getResult()
+        );
 
         // Update
+        assertThrows(
+                "Mise à jour d'un utilisateur avec authentification tiers",
+                Exception.class,
+                () -> user.update(userMap)
+        );
 
+        // Delete
+        assertThrows(
+                "Mise à jour d'un utilisateur avec authentification tiers",
+                Exception.class,
+                user::delete
+        );
+    }
+
+    @Override
+    @Test
+    public void testNoAuthActions() throws Exception {
+        super.authentication(); // Login USER1
+        User user= initializeModels(); // Initialise le modèle de test
+
+        super.testNoAuthActions(); // Logout
+
+        Map<String, Object> userMap = new HashMap<>();
+        userMap.put("firstName", USER1_FIRST_NAME);
+        userMap.put("lastName", USER1_LAST_NAME);
+        userMap.put("tag", USER1_TAG);
+        userMap.put("profilePictureUri", USER1_PROFILE_PIC_URI);
+        userMap.put("email", FirebaseTestHelper.USER1_EMAIL);
+
+        // Create
+        assertThrows(
+                "Création d'un utilisateur sans authentification",
+                Exception.class,
+                () -> user.getRef().set(userMap)
+        );
+
+        // Read
+        assertThrows(
+                "Lecture d'un utilisateur sans authentification",
+                Exception.class,
+                user::read
+        );
+
+        // Update
+        assertThrows(
+                "Mise à jour d'un utilisateur sans authentification",
+                Exception.class,
+                () -> user.update(userMap)
+        );
+
+        // Delete
+        assertThrows(
+                "Mise à jour d'un utilisateur sans authentification",
+                Exception.class,
+                user::delete
+        );
     }
 }

@@ -41,7 +41,7 @@ public class FirebaseTestHelper {
      */
     public static FirebaseFirestore initializeFirebaseFirestoreEmulator() {
         FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
-                .setHost("localhost:8080")
+                .setHost("10.0.2.2:8080")
                 .setSslEnabled(false)
                 .setPersistenceEnabled(false)
                 .build();

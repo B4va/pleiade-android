@@ -1,5 +1,7 @@
 package com.pleiade.android.models;
 
+import android.util.Log;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.pleiade.android.utils.FirebaseTestHelper;
@@ -85,17 +87,9 @@ public abstract class ModelTest {
     }
 
     /**
-     * Teste le CRUD sans authentification
-     */
-    public void testNoAuthActions() throws Exception {
-        FirebaseTestHelper.firebaseAuthLogout(auth);
-        assumeTrue(auth.getCurrentUser() == null);
-    }
-
-    /**
      * Teste le CRUD avec l'authentification d'un utilisateur tiers
      */
-    public void testGenericAuthActions() throws Exception {
+    public void testWrongAuthActions() throws Exception {
         FirebaseTestHelper.firebaseAuthLogin(
                 auth,
                 FirebaseTestHelper.USER2_EMAIL,
@@ -107,10 +101,18 @@ public abstract class ModelTest {
     }
 
     /**
+     * Teste le CRUD avec l'authentification d'un utilisateur tiers
+     */
+    public void testNoAuthActions() throws Exception {
+        FirebaseTestHelper.firebaseAuthLogout(auth);
+        assumeTrue(FirebaseAuth.getInstance().getCurrentUser() == null);
+    }
+
+    /**
      * Authentifie un utilisateur
      * @throws Exception erreur d'authentification
      */
-    private void authentication() throws Exception {
+    void authentication() throws Exception {
         FirebaseTestHelper.firebaseAuthLogin(
                 auth,
                 FirebaseTestHelper.USER1_EMAIL,
