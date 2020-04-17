@@ -2,7 +2,6 @@ package com.pleiade.android.models;
 
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.pleiade.android.utils.FirebaseTestHelper;
 
@@ -18,7 +17,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assume.assumeNotNull;
-import static org.junit.Assume.assumeTrue;
 
 /**
  * Tests du modèle User
@@ -26,14 +24,30 @@ import static org.junit.Assume.assumeTrue;
  */
 public class UserTest extends ModelTest {
 
-    public static final String USER1_FIRST_NAME = "Charlotte";
-    public static final String USER2_FIRST_NAME = "Jean";
-    public static final String USER1_LAST_NAME = "Corday";
-    public static final String USER2_LAST_NAME = "Jaurès";
-    public static final String USER1_PROFILE_PIC_URI = "test/test/test1";
-    public static final String USER2_PROFILE_PIC_URI = "test/test/test2";
-    public static final String USER1_TAG = "user1";
-    public static final String USER2_TAG = "user2";
+    private static final String USER1_FIRST_NAME = "Charlotte";
+    private static final String USER2_FIRST_NAME = "Jean";
+    private static final String USER1_LAST_NAME = "Corday";
+    private static final String USER2_LAST_NAME = "Jaurès";
+    private static final String USER1_PROFILE_PIC_URI = "test/test/test1";
+    private static final String USER2_PROFILE_PIC_URI = "test/test/test2";
+    private static final String USER1_TAG = "user1";
+    private static final String USER2_TAG = "user2";
+
+    /**
+     * Initialise le(s) modèle(s) de test
+     * @return utilisateur test
+     */
+    @Override
+    public User initializeModels() {
+        Map<String, Object> userMap = new HashMap<>();
+        userMap.put("firstName", USER1_FIRST_NAME);
+        userMap.put("lastName", USER1_LAST_NAME);
+        userMap.put("tag", USER1_TAG);
+        userMap.put("profilePictureUri", USER1_PROFILE_PIC_URI);
+        User user = new User();
+        user.create(userMap);
+        return user;
+    }
 
     /**
      * Teste la création valide d'un utilisateur
@@ -42,18 +56,10 @@ public class UserTest extends ModelTest {
     @Test
     public void testCreateV() throws Exception {
         super.testCreateV(); // Login USER1
-        assumeNotNull(auth.getCurrentUser());
-        assumeNotNull(auth.getCurrentUser().getEmail());
-        assumeTrue(auth.getCurrentUser().getEmail().equals(FirebaseTestHelper.USER1_EMAIL));
 
-        Map<String, Object> userMap = new HashMap<>();
-        userMap.put("firstName", USER1_FIRST_NAME);
-        userMap.put("lastName", USER1_LAST_NAME);
-        userMap.put("tag", USER1_TAG);
-        userMap.put("profilePictureUri", USER1_PROFILE_PIC_URI);
+        User user = initializeModels(); // Initialise le modèle de test
 
-        User user = new User();
-        user.create(userMap);
+        /* TESTS */
         assertNotNull("Accès à la référence de l'utilisateur", user.getRef());
         Task<DocumentSnapshot> t = user.getRef().get();
         Tasks.await(t);
@@ -98,9 +104,7 @@ public class UserTest extends ModelTest {
     @Test
     public void testCreateI() throws Exception {
         super.testCreateI(); // Login USER1
-        assumeNotNull(auth.getCurrentUser());
-        assumeNotNull(auth.getCurrentUser().getEmail());
-        assumeTrue(auth.getCurrentUser().getEmail().equals(FirebaseTestHelper.USER1_EMAIL));
+
     }
 
     /**
@@ -110,18 +114,10 @@ public class UserTest extends ModelTest {
     @Test
     public void testRead() throws Exception {
         super.testRead(); // Login USER1
-        assumeNotNull(auth.getCurrentUser());
-        assumeNotNull(auth.getCurrentUser().getEmail());
-        assumeTrue(auth.getCurrentUser().getEmail().equals(FirebaseTestHelper.USER1_EMAIL));
 
-        Map<String, Object> userMap = new HashMap<>();
-        userMap.put("firstName", USER1_FIRST_NAME);
-        userMap.put("lastName", USER1_LAST_NAME);
-        userMap.put("tag", USER1_TAG);
-        userMap.put("profilePictureUri", USER1_PROFILE_PIC_URI);
-        User user = new User();
-        user.create(userMap);
+        User user = initializeModels(); // Initialise le modèle de test
 
+        /* TESTS */
         Task<DocumentSnapshot> t = user.read();
         Tasks.await(t);
 
@@ -165,18 +161,10 @@ public class UserTest extends ModelTest {
     @Test
     public void testUpdateV() throws Exception {
         super.testUpdateV(); // Login USER1
-        assumeNotNull(auth.getCurrentUser());
-        assumeNotNull(auth.getCurrentUser().getEmail());
-        assumeTrue(auth.getCurrentUser().getEmail().equals(FirebaseTestHelper.USER1_EMAIL));
 
-        Map<String, Object> userMap = new HashMap<>();
-        userMap.put("firstName", USER1_FIRST_NAME);
-        userMap.put("lastName", USER1_LAST_NAME);
-        userMap.put("tag", USER1_TAG);
-        userMap.put("profilePictureUri", USER1_PROFILE_PIC_URI);
-        User user = new User();
-        user.create(userMap);
+        User user = initializeModels(); // Initialise le modèle de test
 
+        /* TESTS */
         allFieldsUpdate(user);
         manyFieldsUpdate(user);
         oneFieldUpdate(user);
@@ -361,9 +349,7 @@ public class UserTest extends ModelTest {
     @Test
     public void testUpdateI() throws Exception {
         super.testUpdateI(); // Login USER1
-        assumeNotNull(auth.getCurrentUser());
-        assumeNotNull(auth.getCurrentUser().getEmail());
-        assumeTrue(auth.getCurrentUser().getEmail().equals(FirebaseTestHelper.USER1_EMAIL));
+
     }
 
     /**
@@ -373,19 +359,10 @@ public class UserTest extends ModelTest {
     @Test
     public void testDelete() throws Exception {
         super.testDelete(); // Login USER1
-        assumeNotNull(auth.getCurrentUser());
-        assumeNotNull(auth.getCurrentUser().getEmail());
-        assumeTrue(auth.getCurrentUser().getEmail().equals(FirebaseTestHelper.USER1_EMAIL));
 
-        DocumentReference ref = db.collection("users").document(auth.getCurrentUser().getUid());
-        Map<String, Object> userMap = new HashMap<>();
-        userMap.put("firstName", USER1_FIRST_NAME);
-        userMap.put("lastName", USER1_LAST_NAME);
-        userMap.put("tag", USER1_TAG);
-        userMap.put("profilePictureUri", USER1_PROFILE_PIC_URI);
-        User user = new User();
-        user.create(userMap);
+        User user = initializeModels(); // Initialise le modèle de test
 
+        /* TESTS */
         user.delete();
         assertNull("Utilisateur déconnecté", auth.getCurrentUser());
         assertThrows(
@@ -400,7 +377,7 @@ public class UserTest extends ModelTest {
                 "Erreur lors de l'accès aux données utilisateur",
                 Exception.class,
                 () -> {
-                    Task<DocumentSnapshot> t = ref.get();
+                    Task<DocumentSnapshot> t = user.getRef().get();
                     Tasks.await(t);
                     Objects.requireNonNull(t.getResult()).get("firstName");
                 }
@@ -414,7 +391,6 @@ public class UserTest extends ModelTest {
     @Test
     public void testNoAuthActions() throws Exception {
         super.testNoAuthActions(); // Logout
-        assumeTrue(auth.getCurrentUser() == null);
 
         // Create
 
@@ -433,9 +409,6 @@ public class UserTest extends ModelTest {
     @Test
     public void testGenericAuthActions() throws Exception {
         super.testGenericAuthActions(); // Login USER2
-        assumeNotNull(auth.getCurrentUser());
-        assumeNotNull(auth.getCurrentUser().getEmail());
-        assumeTrue(auth.getCurrentUser().getEmail().equals(FirebaseTestHelper.USER2_EMAIL));
 
         // Create
 
