@@ -32,7 +32,7 @@ public abstract class Model {
      * @param modelMap champs et valeurs
      * @return tâche de mise à jour du modèle
      */
-    public abstract Task<Void> update(Map<String, Object> modelMap);
+    public abstract Task<DocumentSnapshot> update(Map<String, Object> modelMap);
 
     /**
      * Supprime le modèle

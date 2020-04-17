@@ -183,10 +183,9 @@ public class UserTest extends ModelTest {
         userMap.put("tag", USER2_TAG);
         userMap.put("profilePictureUri", USER2_PROFILE_PIC_URI);
         userMap.put("email", FirebaseTestHelper.USER3_EMAIL);
-        Task<Void> update = user.update(userMap);
-        assumeNotNull(update);
 
-        Task<DocumentSnapshot> t = user.getRef().get();
+        Task<DocumentSnapshot> t = user.update(userMap);
+        assumeNotNull(t);
         Tasks.await(t);
 
         assertNotNull("Résultats de la lecture", t.getResult());
@@ -238,10 +237,9 @@ public class UserTest extends ModelTest {
     private void oneFieldUpdate(User user) throws ExecutionException, InterruptedException {
         Map<String, Object> userMap = new HashMap<>();
         userMap.put("firstName", USER2_FIRST_NAME);
-        Task<Void> update = user.update(userMap);
-        assumeNotNull(update);
 
-        Task<DocumentSnapshot> t = user.getRef().get();
+        Task<DocumentSnapshot> t = user.update(userMap);
+        assumeNotNull(t);
         Tasks.await(t);
 
         assertNotNull("Résultats de la lecture", t.getResult());
@@ -288,10 +286,9 @@ public class UserTest extends ModelTest {
         Map<String, Object> userMap = new HashMap<>();
         userMap.put("firstName", USER2_FIRST_NAME);
         userMap.put("lastName", USER2_LAST_NAME);
-        Task<Void> update = user.update(userMap);
-        assumeNotNull(update);
 
-        Task <DocumentSnapshot> t = user.getRef().get();
+        Task<DocumentSnapshot> t = user.update(userMap);
+        assumeNotNull(t);
         Tasks.await(t);
 
         assertNotNull("Résultats de la lecture", t.getResult());
