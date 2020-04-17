@@ -4,12 +4,16 @@ import android.content.Context;
 
 import androidx.test.core.app.ApplicationProvider;
 
+import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -39,7 +43,7 @@ public class FirebaseTestHelper {
      * Initialise l'émulateur FirebaseFirestore
      * @return instance de l'émulateur
      */
-    public static FirebaseFirestore initializeFirebaseFirestoreEmulator() {
+    public static FirebaseFirestore initializeFirebaseFirestoreEmulator() throws SocketException, UnknownHostException {
         FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
                 .setHost("10.0.2.2:8080")
                 .setSslEnabled(false)
@@ -47,6 +51,13 @@ public class FirebaseTestHelper {
                 .build();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.setFirestoreSettings(settings);
+        Task<DocumentSnapshot> t = db.collection("users").document("test").get();
+        try {
+            Tasks.await(t);
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        t.getResult();
         return db;
     }
 
@@ -106,4 +117,5 @@ public class FirebaseTestHelper {
             auth.signOut();
         }
     }
+
 }
