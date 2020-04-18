@@ -100,9 +100,9 @@ public class User extends Model {
      */
     @Override
     public void delete() {
+        Task<Void> t = ref.delete();
         Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).delete();
         FirebaseAuth.getInstance().signOut();
-        ref.delete();
     }
 
     /**

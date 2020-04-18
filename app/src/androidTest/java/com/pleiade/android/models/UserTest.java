@@ -1,7 +1,5 @@
 package com.pleiade.android.models;
 
-import android.util.Log;
-
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -47,6 +45,7 @@ public class UserTest extends ModelTest {
     @Override
     @Before
     public void initializeModels() throws Exception {
+        authentication();
         Map<String, Object> userMap = new HashMap<>();
         userMap.put("firstName", USER1_FIRST_NAME);
         userMap.put("lastName", USER1_LAST_NAME);
@@ -360,12 +359,73 @@ public class UserTest extends ModelTest {
     }
 
     /**
+     * Teste le CRUD avec l'authentification d'un utilisateur tiers
+     */
+    @Override
+    @Test
+    public void testF_WrongAuthActions() throws Exception {
+        super.testF_WrongAuthActions(); // Login USER2
+
+        Map<String, Object> userMap = new HashMap<>();
+        userMap.put("firstName", USER1_FIRST_NAME);
+        userMap.put("lastName", USER1_LAST_NAME);
+        userMap.put("tag", USER1_TAG);
+        userMap.put("profilePictureUri", USER1_PROFILE_PIC_URI);
+        userMap.put("email", FirebaseTestHelper.USER1_EMAIL);
+
+        // Read
+        Task<DocumentSnapshot> t = user.read();
+        Tasks.await(t);
+        assertNotNull(
+                "Lecture d'un utilisateur sans authentification",
+                t.getResult()
+        );
+
+        // Update
+        assertThrows(
+                "Mise à jour d'un utilisateur sans authentification",
+                Exception.class,
+                () -> Tasks.await(user.update(userMap))
+        );
+    }
+
+    /**
+     * Teste le CRUD sans authentification
+     */
+    @Override
+    @Test
+    public void testG_NoAuthActions() throws Exception {
+        super.testG_NoAuthActions(); // Logout
+
+        Map<String, Object> userMap = new HashMap<>();
+        userMap.put("firstName", USER1_FIRST_NAME);
+        userMap.put("lastName", USER1_LAST_NAME);
+        userMap.put("tag", USER1_TAG);
+        userMap.put("profilePictureUri", USER1_PROFILE_PIC_URI);
+        userMap.put("email", FirebaseTestHelper.USER1_EMAIL);
+
+        // Read
+        assertThrows(
+                "Lecture d'un utilisateur sans authentification",
+                Exception.class,
+                () -> Tasks.await(user.read())
+        );
+
+        // Update
+        assertThrows(
+                "Mise à jour d'un utilisateur sans authentification",
+                Exception.class,
+                () -> Tasks.await(user.update(userMap))
+        );
+    }
+
+    /**
      * Teste la suppression d'un utilisateur
      */
     @Override
     @Test
-    public void testF_Delete() throws Exception {
-        super.testF_Delete(); // Login USER1
+    public void testH_Delete() throws Exception {
+        super.testH_Delete(); // Login USER1
 
         /* TESTS */
         user.delete();
@@ -375,109 +435,18 @@ public class UserTest extends ModelTest {
                 "Erreur lors de la tentative de reconnexion",
                 Exception.class,
                 () -> FirebaseTestHelper.firebaseAuthLogin(
-                auth,
-                FirebaseTestHelper.USER1_EMAIL,
-                FirebaseTestHelper.USER_PASSWORD
-        ));
-        Task<DocumentSnapshot> t = user.read();
-        Tasks.await(t);
-        Log.i("TESTDB", String.valueOf(Objects.requireNonNull(t.getResult()).get("firstName")));
-        assertNull(
-                "Erreur lors de l'accès aux données utilisateur",
-                Objects.requireNonNull(t.getResult()).get("lastName")
-        );
-    }
-
-    /**
-     * Teste le CRUD avec l'authentification d'un utilisateur tiers
-     */
-    @Override
-    @Test
-    public void testG_WrongAuthActions() throws Exception {
-        super.authentication(); // Login USER1
-
-        super.testG_WrongAuthActions(); // Login USER2
-
-        Map<String, Object> userMap = new HashMap<>();
-        userMap.put("firstName", USER1_FIRST_NAME);
-        userMap.put("lastName", USER1_LAST_NAME);
-        userMap.put("tag", USER1_TAG);
-        userMap.put("profilePictureUri", USER1_PROFILE_PIC_URI);
-        userMap.put("email", FirebaseTestHelper.USER1_EMAIL);
-
-        // Create
+                        auth,
+                        FirebaseTestHelper.USER1_EMAIL,
+                        FirebaseTestHelper.USER_PASSWORD
+                ));
         assertThrows(
-                "Création d'un utilisateur avec authentification tiers",
+                "Erreur lors de l'accès au données",
                 Exception.class,
-                () -> user.getRef().set(userMap)
-        );
-
-        // Read
-        Task<DocumentSnapshot> t = user.read();
-        Tasks.await(t);
-        assertNotNull(
-                "Lecture d'un utilisateur avec authentification tiers",
-                t.getResult()
-        );
-
-        // Update
-        assertThrows(
-                "Mise à jour d'un utilisateur avec authentification tiers",
-                Exception.class,
-                () -> user.update(userMap)
-        );
-
-        // Delete
-        assertThrows(
-                "Mise à jour d'un utilisateur avec authentification tiers",
-                Exception.class,
-                user::delete
-        );
-    }
-
-    /**
-     * Teste le CRUD sans authentification
-     */
-    @Override
-    @Test
-    public void testH_NoAuthActions() throws Exception {
-        super.authentication(); // Login USER1
-
-        super.testH_NoAuthActions(); // Logout
-
-        Map<String, Object> userMap = new HashMap<>();
-        userMap.put("firstName", USER1_FIRST_NAME);
-        userMap.put("lastName", USER1_LAST_NAME);
-        userMap.put("tag", USER1_TAG);
-        userMap.put("profilePictureUri", USER1_PROFILE_PIC_URI);
-        userMap.put("email", FirebaseTestHelper.USER1_EMAIL);
-
-        // Create
-        assertThrows(
-                "Création d'un utilisateur sans authentification",
-                Exception.class,
-                () -> user.getRef().set(userMap)
-        );
-
-        // Read
-        assertThrows(
-                "Lecture d'un utilisateur sans authentification",
-                Exception.class,
-                user::read
-        );
-
-        // Update
-        assertThrows(
-                "Mise à jour d'un utilisateur sans authentification",
-                Exception.class,
-                () -> user.update(userMap)
-        );
-
-        // Delete
-        assertThrows(
-                "Mise à jour d'un utilisateur sans authentification",
-                Exception.class,
-                user::delete
+                () -> {
+                    Task <DocumentSnapshot> t = user.read();
+                    Tasks.await(t);
+                    t.getResult();
+                }
         );
     }
 }

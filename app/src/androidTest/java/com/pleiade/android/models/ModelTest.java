@@ -78,16 +78,9 @@ public abstract class ModelTest {
     }
 
     /**
-     * Teste la méthode Delete
-     */
-    public void testF_Delete() throws Exception {
-        authentication();
-    }
-
-    /**
      * Teste le CRUD avec l'authentification d'un utilisateur tiers
      */
-    public void testG_WrongAuthActions() throws Exception {
+    public void testF_WrongAuthActions() throws Exception {
         FirebaseTestHelper.firebaseAuthLogin(
                 auth,
                 FirebaseTestHelper.USER2_EMAIL,
@@ -101,9 +94,16 @@ public abstract class ModelTest {
     /**
      * Teste le CRUD avec l'authentification d'un utilisateur tiers
      */
-    public void testH_NoAuthActions() throws Exception {
+    public void testG_NoAuthActions() throws Exception {
         FirebaseTestHelper.firebaseAuthLogout(auth);
         assumeTrue(FirebaseAuth.getInstance().getCurrentUser() == null);
+    }
+
+    /**
+     * Teste la méthode Delete
+     */
+    public void testH_Delete() throws Exception {
+        authentication();
     }
 
     /**
