@@ -14,6 +14,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Modèlisation d'un utilisateur
@@ -44,34 +46,45 @@ public class User extends Model {
      * @return tâche de création de l'utilisateur
      */
     @Override
-    public Task<DocumentSnapshot> create(Map<String, Object> modelMap) {
+    public Task<Void> create(Map<String, Object> modelMap) {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         ref = FirebaseFirestore.getInstance()
             .collection("users")
             .document(Objects.requireNonNull(user).getUid());
         modelMap.put("email", user.getEmail());
         addCreatedTimestamps(modelMap);
-        ref.set(modelMap);
-        return read();
+        firstName = (String) modelMap.get("firstName");
+        lastName = (String) modelMap.get("lastName");
+        email = (String) modelMap.get("email");
+        tag = (String) modelMap.get("tag");
+        profilePictureUri = (String) modelMap.get("profilePictureUri");
+        createdAt = (Timestamp) modelMap.get("createdAt");
+        modifiedAt = (Timestamp) modelMap.get("modifiedAt");
+        return ref.set(modelMap);
     }
 
     /**
      * Accède aux données de l'utilisateur
-     * @return tâche d'acès aux données de l'utilisateur
      */
     @Override
-    public Task<DocumentSnapshot> read() {
+    public void read() {
         Task<DocumentSnapshot> t = ref.get();
-        t.addOnSuccessListener(documentSnapshot -> {
-            firstName = (String) documentSnapshot.get("firstName");
-            lastName = (String) documentSnapshot.get("lastName");
-            email = (String) documentSnapshot.get("email");
-            tag = (String) documentSnapshot.get("tag");
-            profilePictureUri = (String) documentSnapshot.get("profilePictureUri");
-            createdAt = (Timestamp) documentSnapshot.get("createdAt");
-            modifiedAt = (Timestamp) documentSnapshot.get("modifiedAt");
-        });
-        return t;
+        try {
+            Tasks.await(t, 10, TimeUnit.SECONDS);
+        } catch (ExecutionException | InterruptedException | TimeoutException e) {
+            Log.e(TAG, e.toString());
+        }
+        if (t.getResult() == null){
+            Log.e(TAG, "Erreur de lecture");
+        } else {
+            firstName = (String) t.getResult().get("firstName");
+            lastName = (String) t.getResult().get("lastName");
+            email = (String) t.getResult().get("email");
+            tag = (String) t.getResult().get("tag");
+            profilePictureUri = (String) t.getResult().get("profilePictureUri");
+            createdAt = (Timestamp) t.getResult().get("createdAt");
+            modifiedAt = (Timestamp) t.getResult().get("modifiedAt");
+        }
     }
 
     /**
@@ -80,29 +93,30 @@ public class User extends Model {
      * @return tâche de mise à jour de l'utilisateur
      */
     @Override
-    public Task<DocumentSnapshot> update(Map<String, Object> modelMap) {
+    public Task<Void> update(Map<String, Object> modelMap) {
         if (modelMap.containsKey("email")){
             try {
                 Tasks.await(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser())
-                        .updateEmail((String) Objects.requireNonNull(modelMap.get("email"))));
-            } catch (ExecutionException | InterruptedException e) {
+                        .updateEmail((String) Objects.requireNonNull(modelMap.get("email"))),
+                        10, TimeUnit.SECONDS);
+            } catch (ExecutionException | InterruptedException | TimeoutException e) {
                 Log.e(TAG, e.toString());
                 return null;
             }
         }
         addModifiedTimestamp(modelMap);
-        ref.update(modelMap);
-        return this.read();
+        return ref.update(modelMap);
     }
 
     /**
      * Supprime l'utilisateur
+     * @return tâche de suppression de l'utilisateur
      */
     @Override
-    public void delete() {
+    public Task<Void> delete() {
         Task<Void> t = ref.delete();
         Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).delete();
-        FirebaseAuth.getInstance().signOut();
+        return t;
     }
 
     /**
