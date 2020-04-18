@@ -3,7 +3,6 @@ package com.pleiade.android.models;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.Map;
 
@@ -19,25 +18,25 @@ public abstract class Model {
      * @param modelMap champs et valeurs
      * @return tâche de création du modèle
      */
-    public abstract Task<DocumentSnapshot> create(Map<String, Object> modelMap);
+    public abstract Task<Void> create(Map<String, Object> modelMap);
 
     /**
      * Accède aux données du modèles
-     * @return tâche d'accès aux données
      */
-    public abstract Task<DocumentSnapshot> read();
+    public abstract void read();
 
     /**
      * Met à jour le modèle
      * @param modelMap champs et valeurs
      * @return tâche de mise à jour du modèle
      */
-    public abstract Task<DocumentSnapshot> update(Map<String, Object> modelMap);
+    public abstract Task<Void> update(Map<String, Object> modelMap);
 
     /**
      * Supprime le modèle
+     * @return
      */
-    public abstract void delete();
+    public abstract Task<Void> delete();
 
     /**
      * Retourne la référence Firestore du modèle
