@@ -4,11 +4,9 @@ import android.content.Context;
 
 import androidx.test.core.app.ApplicationProvider;
 
-import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 
@@ -51,13 +49,6 @@ public class FirebaseTestHelper {
                 .build();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.setFirestoreSettings(settings);
-        Task<DocumentSnapshot> t = db.collection("users").document("test").get();
-        try {
-            Tasks.await(t);
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
-        }
-        t.getResult();
         return db;
     }
 
