@@ -1,69 +1,69 @@
 rules_version = '2';
 service cloud.firestore {
-  match /databases/{database}/documents {
+    match /databases/{database}/documents {
 
-    match /{document=**} {
-      allow read, write: if false;
+        match /{document=**} {
+            allow read, write: if false;
+        }
+
+        match /users/{userId} {
+            allow read: if signedIn();
+            allow create: if
+                belongsTo(userId) &&
+                fieldsMatch(["firstName","lastName","tag","email", "createdAt", "modifiedAt", "profilePictureUri"]) &&
+                require(requestData().lastName) &&
+                require(requestData().firstName) &&
+                require(requestData().tag) &&
+                require(requestData().email) &&
+                require(requestData().createdAt) &&
+                require(requestData().modifiedAt) &&
+                requestData().lastName is string &&
+                requestData().firstName is string &&
+                requestData().tag is string &&
+                requestData().profilePictureUri is string &&
+                requestData().createdAt is timestamp &&
+                requestData().modifiedAt is timestamp &&
+                requestData().lastName.matches("^[a-zA-Z]*$") &&
+                requestData().firstName.matches("^[a-zA-Z]*$") &&
+                requestData().tag.matches("^[a-zA-Z_0-9]+$");
+            allow update: if
+                belongsTo(userId) &&
+                fieldsMatch(["firstName","lastName","tag","email", "modifiedAt", "profilePictureUri"]) &&
+                requestData().lastName is string &&
+                requestData().firstName is string &&
+                requestData().tag is string &&
+                requestData().profilePictureUri is string &&
+                requestData().modifiedAt is timestamp &&
+                requestData().lastName.matches("^[a-zA-Z]*$") &&
+                requestData().firstName.matches("^[a-zA-Z]*$") &&
+                requestData().tag.matches("^[a-zA-Z_0-9]+$");
+            allow delete: if belongsTo(userId);
+        }
+
+        // FONCTIONS
+
+        function signedIn(){
+            return request.auth.uid != null;
+        }
+
+        function belongsTo(id){
+            return request.auth.uid == id
+        }
+
+        function requestData(){
+            return request.resource.data;
+        }
+
+        function fieldsMatch(allowedFields){
+            return requestData().keys().toSet().intersection(allowedFields.toSet()) ==
+            requestData().keys().toSet();
+        }
+
+        function require(field){
+            return field != null;
+        }
+
+
     }
-
-    match /users/{userId} {
-        allow read: if signedIn();
-        allow create: if
-            belongsTo(userId) &&
-            fieldsMatch(["firstName","lastName","tag","email", "createdAt", "modifiedAt", "profilePictureUri"]) &&
-            require(requestData().lastName) &&
-            require(requestData().firstName) &&
-            require(requestData().tag) &&
-            require(requestData().email) &&
-            require(requestData().createdAt) &&
-            require(requestData().modifiedAt) &&
-            requestData().lastName is string &&
-            requestData().firstName is string &&
-            requestData().tag is string &&
-            requestData().profilePictureUri is string &&
-            requestData().createdAt is timestamp &&
-            requestData().modifiedAt is timestamp &&
-            requestData().lastName.matches("^[a-zA-Z]*$") &&
-            requestData().firstName.matches("^[a-zA-Z]*$") &&
-            requestData().tag.matches("^[a-zA-Z_0-9]+$");
-        allow update: if
-            belongsTo(userId) &&
-            fieldsMatch(["firstName","lastName","tag","email", "modifiedAt", "profilePictureUri"]) &&
-            requestData().lastName is string &&
-            requestData().firstName is string &&
-            requestData().tag is string &&
-            requestData().profilePictureUri is string &&
-            requestData().modifiedAt is timestamp &&
-            requestData().lastName.matches("^[a-zA-Z]*$") &&
-            requestData().firstName.matches("^[a-zA-Z]*$") &&
-            requestData().tag.matches("^[a-zA-Z_0-9]+$");
-        allow delete: if belongsTo(userId);
-    }
-
-    // FONCTIONS
-
-    function signedIn(){
-        return request.auth.uid != null;
-    }
-
-    function belongsTo(id){
-        return request.auth.uid == id
-    }
-
-    function requestData(){
-        return request.resource.data;
-    }
-
-    function fieldsMatch(allowedFields){
-        return requestData().keys().toSet().intersection(allowedFields.toSet()) ==
-        requestData().keys().toSet();
-    }
-
-    function require(field){
-        return field != null;
-    }
-
-
-  }
 
 }
