@@ -8,7 +8,34 @@ service cloud.firestore {
 
     match /users/{userId} {
         allow read: if request.auth.uid != null;
-        allow write: if request.auth.uid == userId;
+        allow create: if
+            request.auth.uid == userId &&
+            request.resource.data.lastName != null &&
+            request.resource.data.firstName != null &&
+            request.resource.data.tag != null &&
+            request.resource.data.email != null &&
+            request.resource.data.createdAt != null &&
+            request.resource.data.modifiedAt != null &&
+            request.resource.data.lastName is string && request.resource.data.lastName.matches("^[a-zA-Z]*$") &&
+            request.resource.data.firstName is string && request.resource.data.firstName.matches("^[a-zA-Z]*$") &&
+            request.resource.data.tag is string && request.resource.data.tag.matches("^[a-zA-Z_0-9]+$") &&
+            request.resource.data.profilePictureUri is string &&
+            request.resource.data.createdAt is timestamp &&
+            request.resource.data.modifiedAt is timestamp &&
+            request.resource.data.keys().toSet().intersection(
+                    ["firstName","lastName","tag","email", "createdAt", "modifiedAt", "profilePictureUri"]
+                .toSet()) == request.resource.data.keys().toSet();
+        allow update: if
+            request.auth.uid == userId &&
+            request.resource.data.lastName is string && request.resource.data.lastName.matches("^[a-zA-Z]*$") &&
+            request.resource.data.firstName is string && request.resource.data.firstName.matches("^[a-zA-Z]*$") &&
+            request.resource.data.tag is string && request.resource.data.tag.matches("^[a-zA-Z_0-9]+$") &&
+            request.resource.data.profilePictureUri is string &&
+            request.resource.data.modifiedAt is timestamp &&
+            request.resource.data.keys().toSet().intersection(
+                                ["firstName","lastName","tag","email", "modifiedAt", "profilePictureUri"]
+                            .toSet()) == request.resource.data.keys().toSet();
+        allow delete: if request.auth.uid == userId;
     }
 
   }
