@@ -73,17 +73,14 @@ public class User extends Model {
     public void read() throws InterruptedException, ExecutionException, TimeoutException {
         Task<DocumentSnapshot> t = ref.get();
         Tasks.await(t, 10, TimeUnit.SECONDS);
-        if (t.getResult() == null){
-            Log.e(TAG, "Erreur de lecture");
-        } else {
-            firstName = (String) t.getResult().get("firstName");
-            lastName = (String) t.getResult().get("lastName");
-            email = (String) t.getResult().get("email");
-            tag = (String) t.getResult().get("tag");
-            profilePictureUri = (String) t.getResult().get("profilePictureUri");
-            createdAt = (Timestamp) t.getResult().get("createdAt");
-            modifiedAt = (Timestamp) t.getResult().get("modifiedAt");
-        }
+        Objects.requireNonNull(t.getResult());
+        firstName = (String) t.getResult().get("firstName");
+        lastName = (String) t.getResult().get("lastName");
+        email = (String) t.getResult().get("email");
+        tag = (String) t.getResult().get("tag");
+        profilePictureUri = (String) t.getResult().get("profilePictureUri");
+        createdAt = (Timestamp) t.getResult().get("createdAt");
+        modifiedAt = (Timestamp) t.getResult().get("modifiedAt");
     }
 
     /**
