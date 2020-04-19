@@ -16,7 +16,6 @@ import org.junit.BeforeClass;
 
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
 
 import static org.junit.Assume.assumeNotNull;
 import static org.junit.Assume.assumeTrue;
@@ -102,10 +101,9 @@ public abstract class ModelTest {
 
     /**
      * Initialise les modèles de tests
-     * @throws ExecutionException erreur lors de l'authentification
-     * @throws InterruptedException tâche interrompue
+     * @throws Exception exceptions diverses
      */
-    protected abstract void initializeModels() throws ExecutionException, InterruptedException;
+    public abstract void initializeModels() throws Exception;
 
     /**
      * Réinitialise l'émulateur Firestore
@@ -164,30 +162,37 @@ public abstract class ModelTest {
 
     /**
      * Teste la création du modèle en base de données
-     * @throws ExecutionException erreur lors de la lecture des données
-     * @throws InterruptedException interruption de la tâche
+     * @throws Exception exceptions diverses
      */
-    public abstract void testA_Create() throws ExecutionException, InterruptedException;
+    public abstract void testA_Create() throws Exception;
 
     /**
      * Teste la lecture du modèle en base de données
-     * @throws ExecutionException erreur lors de la lecture des données
-     * @throws InterruptedException interruption de la tâche
-     * @throws TimeoutException délai de lecture dépassé
+     * @throws Exception exceptions diverses
      */
-    public abstract void testB_Read() throws ExecutionException, InterruptedException, TimeoutException;
+    public abstract void testB_Read() throws Exception;
 
     /**
      * Teste la mise à jour du modèle en base de données
-     * @throws ExecutionException erreur lors de la lecture des données
-     * @throws InterruptedException interruption de la tâche
-     * @throws TimeoutException délai de lecture dépassé
+     * @throws Exception exceptions diverses
      */
-    public abstract void testC_Update() throws ExecutionException, InterruptedException, TimeoutException;
+    public abstract void testC_Update() throws Exception;
+
+    /**
+     * Teste les actions d'un utilisateur authentifié sans l'accès requis
+     * @throws Exception exceptions diverses
+     */
+    public abstract void testD_WrongAuthActions() throws Exception;
+
+    /**
+     * Teste les actions d'un utilisateur non authentifié
+     * @throws Exception exceptions diverses
+     */
+    public abstract void testE_NoAuthActions() throws Exception;
 
     /**
      * Teste la suppression du modèle en base de données
-     * @throws InterruptedException interruption pendant l'attente de suppression
+     * @throws Exception exceptions diverses
      */
-    public abstract void testD_Delete() throws InterruptedException;
+    public abstract void testF_Delete() throws Exception;
 }
