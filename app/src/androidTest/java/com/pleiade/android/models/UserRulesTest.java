@@ -63,6 +63,19 @@ public class UserRulesTest extends RulesTest {
      */
     @Override
     public void testA_Create() throws ExecutionException, InterruptedException {
+        // Manque un champ requis
+
+        // Manque un champ non requis
+
+        // Mauvais format firstName
+
+        // Mauvais format lastName
+
+        // Mauvais format tag
+
+        // Mauvais types
+
+        // Champ supplémentaire
 
     }
 
@@ -85,6 +98,15 @@ public class UserRulesTest extends RulesTest {
      */
     @Override
     public void testC_Update() throws ExecutionException, InterruptedException {
+        // Mauvais format firstName
+
+        // Mauvais format lastName
+
+        // Mauvais format tag
+
+        // Mauvais types
+
+        // Champ supplémentaire
 
     }
 
