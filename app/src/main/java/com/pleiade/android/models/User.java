@@ -5,7 +5,6 @@ import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentId;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -50,7 +49,7 @@ public class User extends Model {
     }
 
     /**
-     * Contructeur modulable en usage direct
+     * Contructeur modulable en usage indirect
      * @param userMap paramètres de création de l'utilisateur
      */
     public User(Map<String, Object> userMap){
@@ -90,7 +89,7 @@ public class User extends Model {
     /**
      * Accès aux informations d'un utilisateur en base de données, sur la base
      * de l'id du document
-     * @return
+     * @return tâche d'accès aux informations
      */
     public Task<DocumentSnapshot> read(){
         DocumentReference ref = FirebaseFirestore.getInstance()

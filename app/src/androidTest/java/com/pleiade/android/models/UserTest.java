@@ -71,10 +71,8 @@ public class UserTest extends ModelTest {
     @Override
     @Test
     public void testA_Create() throws Exception {
-        FirebaseUser fbu = FirebaseAuth.getInstance().getCurrentUser();
-        Objects.requireNonNull(fbu);
         DocumentReference ref = FirebaseFirestore.getInstance()
-                .collection("users").document(fbu.getUid());
+                .collection("users").document(id);
         Task <DocumentSnapshot> t = ref.get();
         Tasks.await(t);
         assumeNotNull(t.getResult());
@@ -82,7 +80,7 @@ public class UserTest extends ModelTest {
         assertNotNull("Initialisation de l'utilisateur", user);
         assertEquals(
                 "Enregistrement de l'id du document",
-                fbu.getUid(),
+                id,
                 user.getDocumentId()
         );
         assertEquals(
@@ -105,6 +103,8 @@ public class UserTest extends ModelTest {
                 USER1_EMAIL,
                 user.getEmail()
         );
+        FirebaseUser fbu = FirebaseAuth.getInstance().getCurrentUser();
+        Objects.requireNonNull(fbu);
         assertEquals(
                 "Enregistrement de l'email Firebase Auth",
                 USER1_EMAIL,
@@ -132,9 +132,7 @@ public class UserTest extends ModelTest {
     @Override
     @Test
     public void testB_Read() throws Exception {
-        FirebaseUser fbu = FirebaseAuth.getInstance().getCurrentUser();
-        Objects.requireNonNull(fbu);
-        user = new User(fbu.getUid());
+        user = new User(id);
         Task<DocumentSnapshot> t = user.read();
         Tasks.await(t);
         assumeNotNull(t.getResult());
@@ -142,7 +140,7 @@ public class UserTest extends ModelTest {
         assertNotNull("Initialisation de l'utilisateur", user);
         assertEquals(
                 "Récupération de l'id du document",
-                fbu.getUid(),
+                id,
                 user.getDocumentId()
         );
         assertEquals(
@@ -188,9 +186,7 @@ public class UserTest extends ModelTest {
     @Override
     @Test
     public void testC_Update() throws Exception {
-        FirebaseUser fbu = FirebaseAuth.getInstance().getCurrentUser();
-        Objects.requireNonNull(fbu);
-        user = new User(fbu.getUid());
+        user = new User(id);
         Timestamp creationTimestamp = user.getCreatedAt();
         Map<String, Object> userMap = new HashMap<>();
         userMap.put("firstName", USER2_FIRST_NAME);
@@ -203,9 +199,10 @@ public class UserTest extends ModelTest {
         Tasks.await(t);
         assumeNotNull(t.getResult());
         user = t.getResult().toObject(User.class);
+        assertNotNull(user);
         assertEquals(
                 "Persistance de l'id du document",
-                fbu.getUid(),
+                id,
                 user.getDocumentId()
         );
         assertEquals(
@@ -228,6 +225,8 @@ public class UserTest extends ModelTest {
                 USER1_EMAIL_UPDATE,
                 user.getEmail()
         );
+        FirebaseUser fbu = FirebaseAuth.getInstance().getCurrentUser();
+        Objects.requireNonNull(fbu);
         assertEquals(
                 "Mise à jour de l'email Firebase Auth",
                 USER1_EMAIL_UPDATE,
