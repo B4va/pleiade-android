@@ -13,6 +13,7 @@ import org.junit.runners.MethodSorters;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -101,10 +102,11 @@ public class UserTest extends ModelTest {
      * Teste la lecture du modèle en base de données
      * @throws ExecutionException erreur lors de la lecture des données
      * @throws InterruptedException interruption de la tâche
+     * @throws TimeoutException délai de lecture dépassé
      */
     @Override
     @Test
-    public void testB_Read() throws ExecutionException, InterruptedException {
+    public void testB_Read() throws ExecutionException, InterruptedException, TimeoutException {
         loginUser1();
 
         user.read();
@@ -143,7 +145,7 @@ public class UserTest extends ModelTest {
      */
     @Override
     @Test
-    public void testC_Update() throws ExecutionException, InterruptedException {
+    public void testC_Update() throws ExecutionException, InterruptedException, TimeoutException {
         loginUser1();
 
         // All fields

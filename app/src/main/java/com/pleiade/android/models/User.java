@@ -65,15 +65,14 @@ public class User extends Model {
 
     /**
      * Accède aux données de l'utilisateur
+     * @throws InterruptedException interruption de la tâche
+     * @throws ExecutionException erreur de lecture
+     * @throws TimeoutException délai de lecture dépassé
      */
     @Override
-    public void read() {
+    public void read() throws InterruptedException, ExecutionException, TimeoutException {
         Task<DocumentSnapshot> t = ref.get();
-        try {
-            Tasks.await(t, 10, TimeUnit.SECONDS);
-        } catch (ExecutionException | InterruptedException | TimeoutException e) {
-            Log.e(TAG, e.toString());
-        }
+        Tasks.await(t, 10, TimeUnit.SECONDS);
         if (t.getResult() == null){
             Log.e(TAG, "Erreur de lecture");
         } else {
