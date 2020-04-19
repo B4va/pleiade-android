@@ -5,6 +5,7 @@ import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentId;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -20,96 +21,128 @@ import java.util.concurrent.TimeoutException;
  */
 public class User extends Model {
 
-    public static final String TAG = "UserModel";
     private String firstName, lastName, email, tag, profilePictureUri;
-    private Timestamp createdAt, modifiedAt;
 
     /**
-     * Constructeur vide, pour création
+     * Contructeur vide, en usage par la base de données Firestore
      */
     public User(){}
 
     /**
-     * Constructeur avec référence pour lecture,
-     * mise à jour et suppression
-     * @param ref référence de l'utilisateur en base de données
+     * Constructeur complet, en usage par la base de données Firestore
+     * @param firstName prénom
+     * @param lastName nom
+     * @param email adresse mail
+     * @param tag nom d'affichage
+     * @param profilePictureUri uri de l'image de profil
+     * @param createdAt date de création
+     * @param modifiedAt date de modification
      */
-    public User(DocumentReference ref){
-        this.ref = ref;
+    public User(String firstName, String lastName, String email, String tag,
+                String profilePictureUri, Timestamp createdAt, Timestamp modifiedAt){
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.tag = tag;
+        this.profilePictureUri = profilePictureUri;
+        this.createdAt = createdAt;
+        this.modifiedAt = modifiedAt;
     }
 
     /**
-     * Crée un utilisateur
-     * @param modelMap champs et valeurs
-     * @return tâche de création de l'utilisateur
+     * Contructeur modulable en usage direct
+     * @param userMap paramètres de création de l'utilisateur
      */
-    @Override
-    public Task<Void> create(Map<String, Object> modelMap) {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        ref = FirebaseFirestore.getInstance()
-            .collection("users")
-            .document(Objects.requireNonNull(user).getUid());
-        modelMap.put("email", user.getEmail());
-        addCreatedTimestamps(modelMap);
-        firstName = (String) modelMap.get("firstName");
-        lastName = (String) modelMap.get("lastName");
-        email = (String) modelMap.get("email");
-        tag = (String) modelMap.get("tag");
-        profilePictureUri = (String) modelMap.get("profilePictureUri");
-        createdAt = (Timestamp) modelMap.get("createdAt");
-        modifiedAt = (Timestamp) modelMap.get("modifiedAt");
-        return ref.set(modelMap);
+    public User(Map<String, Object> userMap){
+        FirebaseUser fbu = FirebaseAuth.getInstance().getCurrentUser();
+        Objects.requireNonNull(fbu);
+        this.firstName = (String) userMap.get("firstName");
+        this.lastName = (String) userMap.get("lastName");
+        this.email = fbu.getEmail();
+        this.tag = (String) userMap.get("tag");
+        this.profilePictureUri = (String) userMap.get("profilePictureUri");
     }
 
     /**
-     * Accède aux données de l'utilisateur
-     * @throws InterruptedException interruption de la tâche
-     * @throws ExecutionException erreur de lecture
-     * @throws TimeoutException délai de lecture dépassé
+     * Contructeur via l'id permettant d'accéder aux données
+     * @param id id du document en base de données
      */
-    @Override
-    public void read() throws InterruptedException, ExecutionException, TimeoutException {
-        Task<DocumentSnapshot> t = ref.get();
-        Tasks.await(t, 10, TimeUnit.SECONDS);
-        Objects.requireNonNull(t.getResult());
-        firstName = (String) t.getResult().get("firstName");
-        lastName = (String) t.getResult().get("lastName");
-        email = (String) t.getResult().get("email");
-        tag = (String) t.getResult().get("tag");
-        profilePictureUri = (String) t.getResult().get("profilePictureUri");
-        createdAt = (Timestamp) t.getResult().get("createdAt");
-        modifiedAt = (Timestamp) t.getResult().get("modifiedAt");
+    public User(String id){
+        documentId = id;
     }
 
     /**
-     * Met à jour l'utilisateur
-     * @param modelMap champs et valeurs
-     * @return tâche de mise à jour de l'utilisateur
-     * @throws InterruptedException interruption de la tâche
-     * @throws ExecutionException erreur dans la mise à jour FirebaseAuth
-     * @throws TimeoutException délai de mise à jour dépassé
+     * Crée un utilisateur en base de données, à partir des attributs
+     * de l'objet
+     * @return tâche de création
      */
-    @Override
+    public Task<Void> create(){
+        FirebaseUser fbu = FirebaseAuth.getInstance().getCurrentUser();
+        Objects.requireNonNull(fbu);
+        email = fbu.getEmail();
+        setCreatedAt(Timestamp.now());
+        setModifiedAt(Timestamp.now());
+        DocumentReference ref = FirebaseFirestore.getInstance()
+                .collection("users").document(fbu.getUid());
+        return ref.set(this);
+    }
+
+    /**
+     * Accès aux informations d'un utilisateur en base de données, sur la base
+     * de l'id du document
+     * @return
+     */
+    public Task<DocumentSnapshot> read(){
+        DocumentReference ref = FirebaseFirestore.getInstance()
+                .collection("users").document(documentId);
+        return ref.get();
+    }
+
+    /**
+     * Met à jour les informations utilisateur en base de données, à partir
+     * des paramètres passés en argument
+     * @param modelMap paramètres de mise à jour de l'utilisateur
+     * @return tâche de mise à jour
+     * @throws InterruptedException interruption de l'éventuelle modification de l'email
+     * @throws ExecutionException erreur d'éxecution de l'éventuelle modification de l'email
+     * @throws TimeoutException délai de l'éventuelle modification de l'email dépassé
+     */
     public Task<Void> update(Map<String, Object> modelMap) throws InterruptedException, ExecutionException, TimeoutException {
         if (modelMap.containsKey("email")){
-            Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser());
-            Tasks.await(FirebaseAuth.getInstance().getCurrentUser()
-                    .updateEmail((String) Objects.requireNonNull(modelMap.get("email"))),
+            FirebaseUser fbu = FirebaseAuth.getInstance().getCurrentUser();
+            Objects.requireNonNull(fbu);
+            Tasks.await(fbu.updateEmail((String) Objects.requireNonNull(modelMap.get("email"))),
                     10, TimeUnit.SECONDS);
-        }
-        addModifiedTimestamp(modelMap);
+            }
+        modelMap.put("modifiedAt", Timestamp.now());
+        DocumentReference ref = FirebaseFirestore.getInstance()
+                .collection("users").document(documentId);
         return ref.update(modelMap);
     }
 
     /**
-     * Supprime l'utilisateur
-     * @return tâche de suppression de l'utilisateur
+     * Supprime un utilisateur de la base de données
+     * @return tâche de suppression
+     * @throws InterruptedException interruption de la suppression du compte utilisateur
+     * @throws ExecutionException erreur d'éxection pendant la suppression du compte utilisateur
+     * @throws TimeoutException délai de suppression du compte utilisateur dépassé
      */
-    @Override
-    public Task<Void> delete() {
+    public Task<Void> delete() throws InterruptedException, ExecutionException, TimeoutException {
+        FirebaseUser fbu = FirebaseAuth.getInstance().getCurrentUser();
+        Objects.requireNonNull(fbu);
+        Tasks.await(fbu.delete(), 10, TimeUnit.SECONDS);
+        DocumentReference ref = FirebaseFirestore.getInstance()
+                .collection("users").document(documentId);
         Task<Void> t = ref.delete();
-        Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).delete();
         return t;
+    }
+
+    /**
+     * Retourne l'id du document associé à l'utilisateur en base de données
+     * @return id du document associé à l'utilisateur
+     */
+    public String getDocumentId() {
+        return documentId;
     }
 
     /**
@@ -137,34 +170,58 @@ public class User extends Model {
     }
 
     /**
-     * Retourne le tag de l'utilisateur
-     * @return tag de l'utilisateur
+     * Retourne le nom d'affichage de l'utilisateur
+     * @return nom d'affichage de l'utilisateur
      */
     public String getTag() {
         return tag;
     }
 
     /**
-     * Retourne l'uri de l'image de profil de l'utilisateur
-     * @return uri de l'image de profil de l'utilisateur
+     * Retourne l'adresse de l'image de profil de l'utilisateur
+     * @return adresse de l'image de profil de l'utilisateur
      */
     public String getProfilePictureUri() {
         return profilePictureUri;
     }
 
     /**
-     * Retourne la date de création de l'utilisateur
-     * @return date de création de l'utilisateur
+     * Enregistre le prénom de l'utilisateur
+     * @param firstName prénom de l'utilisateur
      */
-    public Timestamp getCreatedAt() {
-        return createdAt;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
     /**
-     * Retourne la date de modification de l'utilisateur
-     * @return date de modification de l'utilisateur
+     * Enregistre le nom de l'utilisateur
+     * @param lastName nom de l'utilisateur
      */
-    public Timestamp getModifiedAt() {
-        return modifiedAt;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    /**
+     * Enregistre l'email de l'utilisateur
+     * @param email email de l'utilisateur
+     */
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    /**
+     * Enregistre le nom d'affichage de l'utilisateur
+     * @param tag nom d'affichage de l'utilisateur
+     */
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
+
+    /**
+     * Enregistre l'adresse de l'image de profil de l'utilisateur
+     * @param profilePictureUri adresse de l'image de profil de l'utilisateur
+     */
+    public void setProfilePictureUri(String profilePictureUri) {
+        this.profilePictureUri = profilePictureUri;
     }
 }
