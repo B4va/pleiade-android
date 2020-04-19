@@ -1,73 +1,51 @@
 package com.pleiade.android.models;
 
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
-import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentId;
 
-import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
-
-/**
- * Ressources et méthode implémentant le CRUD pour les modèles
- */
 public abstract class Model {
 
-    protected DocumentReference ref;
+    @DocumentId
+    protected String documentId;
+    protected Timestamp createdAt, modifiedAt;
 
     /**
-     * Crée le modèle
-     * @param modelMap champs et valeurs
-     * @return tâche de création du modèle
+     * Retourne la date de création de l'utilisateur
+     * @return date de création de l'utilisateur
      */
-    public abstract Task<Void> create(Map<String, Object> modelMap);
+    public Timestamp getCreatedAt() {
+        return createdAt;
+    }
 
     /**
-     * Accède aux données de l'utilisateur
-     * @throws InterruptedException interruption de la tâche
-     * @throws ExecutionException erreur de lecture
-     * @throws TimeoutException délai de lecture dépassé
-     */
-    public abstract void read() throws InterruptedException, ExecutionException, TimeoutException;
-
-    /**
-     * Met à jour l'utilisateur
-     * @param modelMap champs et valeurs
-     * @return tâche de mise à jour de l'utilisateur
-     * @throws InterruptedException interruption de la tâche
-     * @throws ExecutionException erreur dans la mise à jour FirebaseAuth (user)
-     * @throws TimeoutException délai de mise à jour dépassé
-     */
-    public abstract Task<Void> update(Map<String, Object> modelMap) throws InterruptedException, ExecutionException, TimeoutException;
-
-    /**
-     * Supprime le modèle
+     * Retourne la date de modification de l'utilisateur
      * @return
      */
-    public abstract Task<Void> delete();
-
-    /**
-     * Retourne la référence Firestore du modèle
-     * @return référence Firestore du modèle
-     */
-    public DocumentReference getRef(){
-        return  ref;
+    public Timestamp getModifiedAt() {
+        return modifiedAt;
     }
 
     /**
-     * Ajoute la date de modification
-     * @param modelMap map à insérer dans la bdd
+     * Enregistre l'id du document associé à l'utilisateur en base de données
+     * @param documentId id du document associé à l'utilisateur
      */
-    protected void addModifiedTimestamp(Map<String, Object> modelMap){
-        modelMap.put("modifiedAt", Timestamp.now());
+    public void setDocumentId(String documentId) {
+        this.documentId = documentId;
     }
 
     /**
-     * Ajoute les dates de modification et de création
-     * @param modelMap map à insérer dans la bdd
+     * Enregistre la date de création de l'utilisateur
+     * @param createdAt date de création de l'utilisateur
      */
-    protected void addCreatedTimestamps(Map<String, Object> modelMap){
-        modelMap.put("createdAt", Timestamp.now());
-        modelMap.put("modifiedAt", modelMap.get("createdAt"));
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    /**
+     * Enregistre la date de modification de l'utilisateur
+     * @param modifiedAt date de modification de l'utilisateur
+     */
+    public void setModifiedAt(Timestamp modifiedAt) {
+        this.modifiedAt = modifiedAt;
     }
 }
