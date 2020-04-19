@@ -1,7 +1,5 @@
 package com.pleiade.android.models;
 
-import android.util.Log;
-
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.Timestamp;
@@ -87,18 +85,17 @@ public class User extends Model {
      * Met à jour l'utilisateur
      * @param modelMap champs et valeurs
      * @return tâche de mise à jour de l'utilisateur
+     * @throws InterruptedException interruption de la tâche
+     * @throws ExecutionException erreur dans la mise à jour FirebaseAuth
+     * @throws TimeoutException délai de mise à jour dépassé
      */
     @Override
-    public Task<Void> update(Map<String, Object> modelMap) {
+    public Task<Void> update(Map<String, Object> modelMap) throws InterruptedException, ExecutionException, TimeoutException {
         if (modelMap.containsKey("email")){
-            try {
-                Tasks.await(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser())
-                        .updateEmail((String) Objects.requireNonNull(modelMap.get("email"))),
-                        10, TimeUnit.SECONDS);
-            } catch (ExecutionException | InterruptedException | TimeoutException e) {
-                Log.e(TAG, e.toString());
-                return null;
-            }
+            Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser());
+            Tasks.await(FirebaseAuth.getInstance().getCurrentUser()
+                    .updateEmail((String) Objects.requireNonNull(modelMap.get("email"))),
+                    10, TimeUnit.SECONDS);
         }
         addModifiedTimestamp(modelMap);
         return ref.update(modelMap);

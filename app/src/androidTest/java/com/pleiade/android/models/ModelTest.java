@@ -1,7 +1,6 @@
 package com.pleiade.android.models;
 
 import android.content.Context;
-import android.util.Log;
 
 import androidx.test.core.app.ApplicationProvider;
 
@@ -90,17 +89,15 @@ public abstract class ModelTest {
 
     /**
      * Supprime les utilisateurs créés pour les tests
+     * @throws ExecutionException erreur d'authentification
+     * @throws InterruptedException interruption de la tâche
      */
     @AfterClass
-    public static void tearDown(){
-        try{
-            loginUser1();
-            logout();
-            loginUser2();
-            logout();
-        } catch (InterruptedException | ExecutionException e) {
-            Log.e(ModelTest.class.toString(), e.toString());
-        }
+    public static void tearDown() throws ExecutionException, InterruptedException {
+        loginUser1();
+        logout();
+        loginUser2();
+        logout();
     }
 
     /**
