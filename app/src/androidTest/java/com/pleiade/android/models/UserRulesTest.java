@@ -12,6 +12,7 @@ import org.junit.runners.MethodSorters;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -101,10 +102,11 @@ public class UserRulesTest extends RulesTest {
      * Teste les actions d'un utilisateur authentifié sans l'accès requis
      * @throws ExecutionException erreur lors de la lecture des données
      * @throws InterruptedException interruption de la tâche
+     * @throws TimeoutException délai de lecture dépassé
      */
     @Override
     @Test
-    public void testE_WrongAuthActions() throws ExecutionException, InterruptedException {
+    public void testE_WrongAuthActions() throws ExecutionException, InterruptedException, TimeoutException {
         assumeNotNull(FirebaseAuth.getInstance().getCurrentUser());
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DocumentReference ref = FirebaseFirestore.getInstance()
@@ -169,10 +171,11 @@ public class UserRulesTest extends RulesTest {
      * Teste les actions d'un utilisateur non authentifié
      * @throws ExecutionException erreur lors de la lecture des données
      * @throws InterruptedException interruption de la tâche
+     * @throws TimeoutException délai de lecture dépassé
      */
     @Override
     @Test
-    public void testF_NoAuthActions() throws ExecutionException, InterruptedException {
+    public void testF_NoAuthActions() throws ExecutionException, InterruptedException, TimeoutException {
         assumeNotNull(FirebaseAuth.getInstance().getCurrentUser());
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DocumentReference ref = FirebaseFirestore.getInstance()

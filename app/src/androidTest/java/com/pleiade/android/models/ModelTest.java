@@ -17,6 +17,7 @@ import org.junit.BeforeClass;
 
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 import static org.junit.Assume.assumeNotNull;
 import static org.junit.Assume.assumeTrue;
@@ -175,15 +176,17 @@ public abstract class ModelTest {
      * Teste la lecture du modèle en base de données
      * @throws ExecutionException erreur lors de la lecture des données
      * @throws InterruptedException interruption de la tâche
+     * @throws TimeoutException délai de lecture dépassé
      */
-    public abstract void testB_Read() throws ExecutionException, InterruptedException;
+    public abstract void testB_Read() throws ExecutionException, InterruptedException, TimeoutException;
 
     /**
      * Teste la mise à jour du modèle en base de données
      * @throws ExecutionException erreur lors de la lecture des données
      * @throws InterruptedException interruption de la tâche
+     * @throws TimeoutException délai de lecture dépassé
      */
-    public abstract void testC_Update() throws ExecutionException, InterruptedException;
+    public abstract void testC_Update() throws ExecutionException, InterruptedException, TimeoutException;
 
     /**
      * Teste la suppression du modèle en base de données
