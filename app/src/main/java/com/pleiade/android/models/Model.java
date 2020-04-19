@@ -31,11 +31,14 @@ public abstract class Model {
     public abstract void read() throws InterruptedException, ExecutionException, TimeoutException;
 
     /**
-     * Met à jour le modèle
+     * Met à jour l'utilisateur
      * @param modelMap champs et valeurs
-     * @return tâche de mise à jour du modèle
+     * @return tâche de mise à jour de l'utilisateur
+     * @throws InterruptedException interruption de la tâche
+     * @throws ExecutionException erreur dans la mise à jour FirebaseAuth (user)
+     * @throws TimeoutException délai de mise à jour dépassé
      */
-    public abstract Task<Void> update(Map<String, Object> modelMap);
+    public abstract Task<Void> update(Map<String, Object> modelMap) throws InterruptedException, ExecutionException, TimeoutException;
 
     /**
      * Supprime le modèle
