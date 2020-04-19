@@ -5,6 +5,8 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Ressources et méthode implémentant le CRUD pour les modèles
@@ -21,9 +23,12 @@ public abstract class Model {
     public abstract Task<Void> create(Map<String, Object> modelMap);
 
     /**
-     * Accède aux données du modèles
+     * Accède aux données de l'utilisateur
+     * @throws InterruptedException interruption de la tâche
+     * @throws ExecutionException erreur de lecture
+     * @throws TimeoutException délai de lecture dépassé
      */
-    public abstract void read();
+    public abstract void read() throws InterruptedException, ExecutionException, TimeoutException;
 
     /**
      * Met à jour le modèle
