@@ -7,36 +7,62 @@ service cloud.firestore {
     }
 
     match /users/{userId} {
-        allow read: if request.auth.uid != null;
+        allow read: if signedIn();
         allow create: if
-            request.auth.uid == userId &&
-            request.resource.data.lastName != null &&
-            request.resource.data.firstName != null &&
-            request.resource.data.tag != null &&
-            request.resource.data.email != null &&
-            request.resource.data.createdAt != null &&
-            request.resource.data.modifiedAt != null &&
-            request.resource.data.lastName is string && request.resource.data.lastName.matches("^[a-zA-Z]*$") &&
-            request.resource.data.firstName is string && request.resource.data.firstName.matches("^[a-zA-Z]*$") &&
-            request.resource.data.tag is string && request.resource.data.tag.matches("^[a-zA-Z_0-9]+$") &&
-            request.resource.data.profilePictureUri is string &&
-            request.resource.data.createdAt is timestamp &&
-            request.resource.data.modifiedAt is timestamp &&
-            request.resource.data.keys().toSet().intersection(
-                    ["firstName","lastName","tag","email", "createdAt", "modifiedAt", "profilePictureUri"]
-                .toSet()) == request.resource.data.keys().toSet();
+            belongsTo(userId) &&
+            fieldsMatch(["firstName","lastName","tag","email", "createdAt", "modifiedAt", "profilePictureUri"]) &&
+            require(requestData().lastName) &&
+            require(requestData().firstName) &&
+            require(requestData().tag) &&
+            require(requestData().email) &&
+            require(requestData().createdAt) &&
+            require(requestData().modifiedAt) &&
+            requestData().lastName is string &&
+            requestData().firstName is string &&
+            requestData().tag is string &&
+            requestData().profilePictureUri is string &&
+            requestData().createdAt is timestamp &&
+            requestData().modifiedAt is timestamp &&
+            requestData().lastName.matches("^[a-zA-Z]*$") &&
+            requestData().firstName.matches("^[a-zA-Z]*$") &&
+            requestData().tag.matches("^[a-zA-Z_0-9]+$");
         allow update: if
-            request.auth.uid == userId &&
-            request.resource.data.lastName is string && request.resource.data.lastName.matches("^[a-zA-Z]*$") &&
-            request.resource.data.firstName is string && request.resource.data.firstName.matches("^[a-zA-Z]*$") &&
-            request.resource.data.tag is string && request.resource.data.tag.matches("^[a-zA-Z_0-9]+$") &&
-            request.resource.data.profilePictureUri is string &&
-            request.resource.data.modifiedAt is timestamp &&
-            request.resource.data.keys().toSet().intersection(
-                                ["firstName","lastName","tag","email", "modifiedAt", "profilePictureUri"]
-                            .toSet()) == request.resource.data.keys().toSet();
-        allow delete: if request.auth.uid == userId;
+            belongsTo(userId) &&
+            fieldsMatch(["firstName","lastName","tag","email", "modifiedAt", "profilePictureUri"]) &&
+            requestData().lastName is string &&
+            requestData().firstName is string &&
+            requestData().tag is string &&
+            requestData().profilePictureUri is string &&
+            requestData().modifiedAt is timestamp &&
+            requestData().lastName.matches("^[a-zA-Z]*$") &&
+            requestData().firstName.matches("^[a-zA-Z]*$") &&
+            requestData().tag.matches("^[a-zA-Z_0-9]+$");
+        allow delete: if belongsTo(userId);
     }
+
+    // FONCTIONS
+
+    function signedIn(){
+        return request.auth.uid != null;
+    }
+
+    function belongsTo(id){
+        return request.auth.uid == id
+    }
+
+    function requestData(){
+        return request.resource.data;
+    }
+
+    function fieldsMatch(allowedFields){
+        return requestData().keys().toSet().intersection(allowedFields.toSet()) ==
+        requestData().keys().toSet();
+    }
+
+    function require(field){
+        return field != null;
+    }
+
 
   }
 
