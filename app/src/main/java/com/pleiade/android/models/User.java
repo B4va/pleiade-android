@@ -10,7 +10,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.pleiade.android.utils.DataValidator;
 import com.pleiade.android.utils.InvalidDataException;
-import com.pleiade.android.utils.Test;
+import com.pleiade.android.utils.ValidationMethod;
 
 import java.util.Map;
 import java.util.Objects;
@@ -31,7 +31,7 @@ public class User extends Model {
     /**
      * Règles de validation des données
      */
-    private static final Test<Map<String, Object>> CREATE_TEST =
+    private static final ValidationMethod<Map<String, Object>> CREATE_VALIDATION =
             modelMap -> hasNoExtraKey(modelMap,
                     new String[]{"firstName", "lastName", "tag", "profilePictureUri"}) &&
                     exists(modelMap, "firstName") &&
@@ -44,7 +44,7 @@ public class User extends Model {
                     matches("^[^0-9]*$", modelMap.get("firstName")) &&
                     matches("^[^0-9]*$", modelMap.get("lastName")) &&
                     matches("^[\\S]*$", modelMap.get("tag"));
-    private static final Test<Map<String, Object>> UPDATE_TEST =
+    private static final ValidationMethod<Map<String, Object>> UPDATE_VALIDATION =
             modelMap -> hasNoExtraKey(modelMap,
                     new String[]{"firstName", "lastName", "tag", "profilePictureUri", "email"}) &&
                     is(String.class, modelMap.get("firstName")) &&
@@ -100,7 +100,7 @@ public class User extends Model {
      * @return tâche de création
      */
     public Task<Void> create(Map<String, Object> modelMap) throws InvalidDataException {
-        new DataValidator(modelMap, CREATE_TEST).test();
+        new DataValidator(modelMap, CREATE_VALIDATION).test();
         FirebaseUser fbu = FirebaseAuth.getInstance().getCurrentUser();
         Objects.requireNonNull(fbu);
         modelMap.put("email", fbu.getEmail());
@@ -133,7 +133,7 @@ public class User extends Model {
      * @throws TimeoutException délai de l'éventuelle modification de l'email dépassé
      */
     public Task<Void> update(Map<String, Object> modelMap) throws InvalidDataException, InterruptedException, ExecutionException, TimeoutException {
-        new DataValidator(modelMap, UPDATE_TEST).test();
+        new DataValidator(modelMap, UPDATE_VALIDATION).test();
         if (modelMap.containsKey("email")){
             FirebaseUser fbu = FirebaseAuth.getInstance().getCurrentUser();
             Objects.requireNonNull(fbu);
