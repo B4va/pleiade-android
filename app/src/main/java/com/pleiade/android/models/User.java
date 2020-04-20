@@ -8,6 +8,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.pleiade.android.utils.DataValidator;
+import com.pleiade.android.utils.InvalidDataException;
+import com.pleiade.android.utils.Test;
 
 import java.util.Map;
 import java.util.Objects;
@@ -20,7 +23,40 @@ import java.util.concurrent.TimeoutException;
  */
 public class User extends Model {
 
+    /**
+     * Attributs
+     */
     private String firstName, lastName, email, tag, profilePictureUri;
+
+    /**
+     * Règles de validation des données
+     */
+    private static final Test<Map<String, Object>> CREATE_TEST =
+            modelMap -> hasNoExtraKey(modelMap,
+                    new String[]{"firstName", "lastName", "tag", "profilePictureUri"}) &&
+                    exists(modelMap, "firstName") &&
+                    exists(modelMap, "lastName") &&
+                    exists(modelMap, "tag") &&
+                    is(String.class, modelMap.get("firstName")) &&
+                    is(String.class, modelMap.get("lastName")) &&
+                    is(String.class, modelMap.get("tag")) &&
+                    is(String.class, modelMap.get("profileImageUri")) &&
+                    matches("^[^0-9]*$", modelMap.get("firstName")) &&
+                    matches("^[^0-9]*$", modelMap.get("lastName")) &&
+                    matches("^[\\S]*$", modelMap.get("tag"));
+    private static final Test<Map<String, Object>> UPDATE_TEST =
+            modelMap -> hasNoExtraKey(modelMap,
+                    new String[]{"firstName", "lastName", "tag", "profilePictureUri", "email"}) &&
+                    is(String.class, modelMap.get("firstName")) &&
+                    is(String.class, modelMap.get("lastName")) &&
+                    is(String.class, modelMap.get("tag")) &&
+                    is(String.class, modelMap.get("profileImageUri")) &&
+                    is(String.class, modelMap.get("email")) &&
+                    matches("^[^0-9]*$", modelMap.get("firstName")) &&
+                    matches("^[^0-9]*$", modelMap.get("lastName")) &&
+                    matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$",
+                        modelMap.get("email")) &&
+                    matches("^[\\S]*$", modelMap.get("tag"));
 
     /**
      * Contructeur vide, en usage par la base de données Firestore
@@ -49,20 +85,6 @@ public class User extends Model {
     }
 
     /**
-     * Contructeur modulable en usage indirect
-     * @param userMap paramètres de création de l'utilisateur
-     */
-    public User(Map<String, Object> userMap){
-        FirebaseUser fbu = FirebaseAuth.getInstance().getCurrentUser();
-        Objects.requireNonNull(fbu);
-        this.firstName = (String) userMap.get("firstName");
-        this.lastName = (String) userMap.get("lastName");
-        this.email = fbu.getEmail();
-        this.tag = (String) userMap.get("tag");
-        this.profilePictureUri = (String) userMap.get("profilePictureUri");
-    }
-
-    /**
      * Contructeur via l'id permettant d'accéder aux données
      * @param id id du document en base de données
      */
@@ -73,17 +95,20 @@ public class User extends Model {
     /**
      * Crée un utilisateur en base de données, à partir des attributs
      * de l'objet
+     * @param modelMap paramètres de création de l'utilisateur
+     * @throws InvalidDataException données de mise à jour invalides
      * @return tâche de création
      */
-    public Task<Void> create(){
+    public Task<Void> create(Map<String, Object> modelMap) throws InvalidDataException {
+        new DataValidator(modelMap, CREATE_TEST).test();
         FirebaseUser fbu = FirebaseAuth.getInstance().getCurrentUser();
         Objects.requireNonNull(fbu);
-        email = fbu.getEmail();
-        setCreatedAt(Timestamp.now());
-        setModifiedAt(Timestamp.now());
+        modelMap.put("email", fbu.getEmail());
+        modelMap.put("createdAt", Timestamp.now());
+        modelMap.put("modifiedAt", Timestamp.now());
         DocumentReference ref = FirebaseFirestore.getInstance()
                 .collection("users").document(fbu.getUid());
-        return ref.set(this);
+        return ref.set(modelMap);
     }
 
     /**
@@ -102,11 +127,13 @@ public class User extends Model {
      * des paramètres passés en argument
      * @param modelMap paramètres de mise à jour de l'utilisateur
      * @return tâche de mise à jour
+     * @throws InvalidDataException données de mise à jour invalides
      * @throws InterruptedException interruption de l'éventuelle modification de l'email
      * @throws ExecutionException erreur d'éxecution de l'éventuelle modification de l'email
      * @throws TimeoutException délai de l'éventuelle modification de l'email dépassé
      */
-    public Task<Void> update(Map<String, Object> modelMap) throws InterruptedException, ExecutionException, TimeoutException {
+    public Task<Void> update(Map<String, Object> modelMap) throws InvalidDataException, InterruptedException, ExecutionException, TimeoutException {
+        new DataValidator(modelMap, UPDATE_TEST).test();
         if (modelMap.containsKey("email")){
             FirebaseUser fbu = FirebaseAuth.getInstance().getCurrentUser();
             Objects.requireNonNull(fbu);
@@ -132,8 +159,7 @@ public class User extends Model {
         Tasks.await(fbu.delete(), 10, TimeUnit.SECONDS);
         DocumentReference ref = FirebaseFirestore.getInstance()
                 .collection("users").document(documentId);
-        Task<Void> t = ref.delete();
-        return t;
+        return ref.delete();
     }
 
     /**
