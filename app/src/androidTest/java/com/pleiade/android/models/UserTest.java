@@ -57,8 +57,8 @@ public class UserTest extends ModelTest {
         userMap.put("lastName", USER1_LAST_NAME);
         userMap.put("tag", USER1_TAG);
         userMap.put("profilePictureUri", USER1_PROFILE_PIC_URI);
-        user = new User(userMap);
-        user.create();
+        user = new User();
+        user.create(userMap);
         FirebaseUser fbu = FirebaseAuth.getInstance().getCurrentUser();
         Objects.requireNonNull(fbu);
         id = fbu.getUid();
@@ -284,7 +284,7 @@ public class UserTest extends ModelTest {
         userMap.put("lastName", USER2_LAST_NAME);
         userMap.put("tag", USER2_TAG);
         userMap.put("profilePictureUri", USER2_PROFILE_PIC_URI);
-        new User(userMap).create();
+        new User().create(userMap);
         loginUser1();
         Task <DocumentSnapshot> t = new User(id).read();
         Tasks.await(t);
@@ -345,10 +345,15 @@ public class UserTest extends ModelTest {
 
         // Create
         logout();
+        Map<String, Object> userMap1 = new HashMap<>();
+        userMap1.put("firstName", USER1_FIRST_NAME);
+        userMap1.put("lastName", USER1_LAST_NAME);
+        userMap1.put("tag", USER1_TAG);
+        userMap1.put("profilePictureUri", USER1_PROFILE_PIC_URI);
         assertThrows(
                 "Impossible de créer un utilisateur",
                 Exception.class,
-                () -> new User(id).create()
+                () -> new User(id).create(userMap1)
         );
 
         // Read
@@ -359,9 +364,9 @@ public class UserTest extends ModelTest {
         );
 
         //Update
-        Map<String, Object> userMap = new HashMap<>();
-        userMap.put("firstName", USER2_FIRST_NAME);
-        new User(id).update(userMap);
+        Map<String, Object> userMap2 = new HashMap<>();
+        userMap2.put("firstName", USER2_FIRST_NAME);
+        new User(id).update(userMap2);
         loginUser1();
         Task <DocumentSnapshot> t = new User(id).read();
         Tasks.await(t);
