@@ -8,14 +8,14 @@ import java.util.Map;
 public class DataValidator {
 
     private Map<String, Object> modelMap;
-    private Test<Map<String, Object>> test;
+    private ValidationMethod<Map<String, Object>> test;
 
     /**
      * Constructeur complet
      * @param modelMap données à valider
      * @param test méthode de test des données
      */
-    public DataValidator(Map<String, Object> modelMap, Test<Map<String, Object>> test){
+    public DataValidator(Map<String, Object> modelMap, ValidationMethod<Map<String, Object>> test){
         this.modelMap = modelMap;
         this.test = test;
     }
