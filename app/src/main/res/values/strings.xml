@@ -6,4 +6,6 @@
     <string name="logo">Pleiade</string>
     <string name="loginBtn">Se connecter</string>
     <string name="signinBtn">S\'inscrire</string>
+    <string name="menu">menu</string>
+    <string name="rechercher">rechercher</string>
 </resources>
