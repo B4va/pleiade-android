@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="LockedOrientationActivity"
     package="com.pleiade.android">
 
     <application
@@ -10,26 +12,27 @@
         android:roundIcon="@drawable/icon_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activities.TagUpdateActivity"></activity>
-        <activity android:name=".activities.NameUpdateActivity" />
-        <activity android:name=".activities.EmailUpdateActivity" />
-        <activity android:name=".activities.PasswordUpdateActivity" />
-        <activity android:name=".activities.PictureUpdateActivity" />
-        <activity android:name=".activities.AccountActivity" />
-        <activity android:name=".activities.ForgotPasswordActivity" />
-        <activity android:name=".activities.SigninActivity" />
-        <activity android:name=".activities.LoginActivity" />
-        <activity android:name=".activities.HomeActivity" /> <!-- SplashActivity -->
         <activity
             android:name=".activities.SplashActivity"
-            android:theme="@style/SplashTheme">
+            android:theme="@style/SplashTheme"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity> <!-- MainActivity -->
-        <activity android:name=".activities.MainActivity" />
+        </activity>
+        <activity
+            android:name=".activities.HomeActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".activities.LoginActivity" />
+        <activity android:name=".activities.ForgotPasswordActivity" />
+        <activity android:name=".activities.SigninActivity" />
+        <activity android:name=".activities.AccountActivity" />
+        <activity android:name=".activities.NameUpdateActivity" />
+        <activity android:name=".activities.EmailUpdateActivity" />
+        <activity android:name=".activities.TagUpdateActivity" />
+        <activity android:name=".activities.PictureUpdateActivity" />
+        <activity android:name=".activities.PasswordUpdateActivity" />
     </application>
 
 </manifest>
