@@ -6,7 +6,6 @@ import android.os.Handler;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
@@ -58,7 +57,7 @@ public class SplashActivity extends AppCompatActivity {
                 );
                 buttons.startAnimation(fadeIn);
             }
-        }, TRANSITION_TIMEOUT);
+        }, TRANSITION_TIMEOUT); // todo : preload des données à la place du timeout
     }
 
     /**
