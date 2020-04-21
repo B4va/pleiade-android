@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="50dp"
     tools:context="com.pleiade.android.activities.SplashActivity">
 
     <ImageView
         android:id="@+id/logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:padding="50dp"
         android:layout_marginBottom="200dp"
         android:contentDescription="@string/logo"
         android:src="@drawable/max_logo_white"
@@ -30,6 +30,46 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/logo" />
+
+    <Button
+        android:id="@+id/loginBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="175dp"
+        android:width="310dp"
+        android:height="55dp"
+        android:background="@drawable/white_button"
+        android:fontFamily="sans-serif"
+        android:text="@string/loginBtn"
+        android:textAllCaps="false"
+        android:textColor="@color/golder"
+        android:textSize="20sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/logo"
+        android:onClick="login"/>
+
+    <Button
+        android:id="@+id/signinBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="320dp"
+        android:width="310dp"
+        android:height="55dp"
+        android:background="@drawable/gold_outlined_button"
+        android:fontFamily="sans-serif"
+        android:text="@string/signinBtn"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/logo"
+        android:onClick="signin"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
