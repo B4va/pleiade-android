@@ -3,22 +3,25 @@ package com.pleiade.android.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ProgressBar;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.pleiade.android.R;
-import com.pleiade.android.utils.Tag;
 
 /**
  * Ecran de chargement au lancement de l'activité
  */
 public class SplashActivity extends AppCompatActivity {
 
-
     private static final int TRANSITION_TIMEOUT = 3000;
+
+    private Button loginBtn, signinBtn;
+    private ProgressBar progressBar;
 
     /**
      * Exécutée à la création de l'instance
@@ -29,6 +32,10 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
+        loginBtn = findViewById(R.id.loginBtn);
+        signinBtn = findViewById(R.id.signinBtn);
+        progressBar = findViewById(R.id.progressBar);
+
         FirebaseUser fbu = FirebaseAuth.getInstance().getCurrentUser();
 
         /*
@@ -36,15 +43,27 @@ public class SplashActivity extends AppCompatActivity {
          * vers HomeActivity si utilisateur connecté
          */
         new Handler().postDelayed(() -> {
-            Intent intent;
             if (fbu != null){
-                intent = new Intent(getApplicationContext(), HomeActivity.class);
+                Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+                startActivity(intent);
+                finish();
             } else {
-                intent = new Intent(getApplicationContext(), LoginActivity.class);
+                progressBar.setVisibility(View.GONE);
+                loginBtn.setVisibility(View.VISIBLE);
+                signinBtn.setVisibility(View.VISIBLE);
             }
-            Log.i(Tag.TEST, "Redirection : " + intent.toString());
-            startActivity(intent);
-            finish();
         }, TRANSITION_TIMEOUT);
+    }
+
+    public void login(View view) {
+        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    public void signin(View view) {
+        Intent intent = new Intent(getApplicationContext(), SigninActivity.class);
+        startActivity(intent);
+        finish();
     }
 }
