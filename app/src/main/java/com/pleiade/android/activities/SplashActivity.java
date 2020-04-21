@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.view.Window;
-import android.view.WindowManager;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -13,8 +11,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.pleiade.android.R;
 import com.pleiade.android.utils.Tag;
-
-import java.util.Objects;
 
 /**
  * Ecran de chargement au lancement de l'activité
@@ -35,7 +31,10 @@ public class SplashActivity extends AppCompatActivity {
 
         FirebaseUser fbu = FirebaseAuth.getInstance().getCurrentUser();
 
-        /* Redirige vers MainActivity */
+        /*
+         * Redirige vers LoginActivity si aucun utilisateur connecté,
+         * vers HomeActivity si utilisateur connecté
+         */
         new Handler().postDelayed(() -> {
             Intent intent;
             if (fbu != null){
@@ -43,7 +42,7 @@ public class SplashActivity extends AppCompatActivity {
             } else {
                 intent = new Intent(getApplicationContext(), LoginActivity.class);
             }
-            Log.i(Tag.TEST, intent.toString());
+            Log.i(Tag.TEST, "Redirection : " + intent.toString());
             startActivity(intent);
             finish();
         }, TRANSITION_TIMEOUT);
