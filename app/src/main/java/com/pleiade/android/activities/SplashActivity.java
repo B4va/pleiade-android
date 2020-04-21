@@ -4,7 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,7 +23,7 @@ public class SplashActivity extends AppCompatActivity {
 
     private static final int TRANSITION_TIMEOUT = 3000;
 
-    private Button loginBtn, signinBtn;
+    private LinearLayout buttons;
     private ProgressBar progressBar;
 
     /**
@@ -32,8 +35,7 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        loginBtn = findViewById(R.id.loginBtn);
-        signinBtn = findViewById(R.id.signinBtn);
+        buttons = findViewById(R.id.buttons);
         progressBar = findViewById(R.id.progressBar);
 
         FirebaseUser fbu = FirebaseAuth.getInstance().getCurrentUser();
@@ -49,8 +51,12 @@ public class SplashActivity extends AppCompatActivity {
                 finish();
             } else {
                 progressBar.setVisibility(View.GONE);
-                loginBtn.setVisibility(View.VISIBLE);
-                signinBtn.setVisibility(View.VISIBLE);
+                buttons.setVisibility(View.VISIBLE);
+                Animation fadeIn = AnimationUtils.loadAnimation(
+                        getApplicationContext(),
+                        R.anim.fade_in
+                );
+                buttons.startAnimation(fadeIn);
             }
         }, TRANSITION_TIMEOUT);
     }
