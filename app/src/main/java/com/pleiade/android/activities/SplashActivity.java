@@ -39,8 +39,8 @@ public class SplashActivity extends AppCompatActivity {
         FirebaseUser fbu = FirebaseAuth.getInstance().getCurrentUser();
 
         /*
-         * Redirige vers LoginActivity si aucun utilisateur connecté,
-         * vers HomeActivity si utilisateur connecté
+         * Redirige vers HomeActvity si utilisateur connecté, sinon
+         * propose la connexion et l'inscription
          */
         new Handler().postDelayed(() -> {
             if (fbu != null){
@@ -55,12 +55,20 @@ public class SplashActivity extends AppCompatActivity {
         }, TRANSITION_TIMEOUT);
     }
 
+    /**
+     * Redirige vers la page de connexion
+     * @param view vue courante
+     */
     public void login(View view) {
         Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
         startActivity(intent);
         finish();
     }
 
+    /**
+     * Redirige vers la page d'inscription
+     * @param view vue courante
+     */
     public void signin(View view) {
         Intent intent = new Intent(getApplicationContext(), SigninActivity.class);
         startActivity(intent);
