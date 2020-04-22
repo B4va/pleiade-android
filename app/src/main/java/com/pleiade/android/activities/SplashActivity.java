@@ -16,7 +16,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.pleiade.android.R;
 
 /**
- * Ecran de chargement au lancement de l'activité
+ * Ecran de chargement au lancement de l'application
  */
 public class SplashActivity extends AppCompatActivity {
 
