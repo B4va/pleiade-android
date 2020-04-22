@@ -8,4 +8,10 @@
     <string name="signinBtn">S\'inscrire</string>
     <string name="menu">menu</string>
     <string name="rechercher">rechercher</string>
+    <string name="connexion">Connexion</string>
+    <string name="login">Login</string>
+    <string name="password">Mot de passe</string>
+    <string name="forgot_password">Mot de passe oublié ?</string>
+    <string name="login_btn">Se connecter</string>
+    <string name="login_signin">Pas encore inscrit ? S\'inscrire ici.</string>
 </resources>
